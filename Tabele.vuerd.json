@@ -3,8 +3,8 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -332.8000000000009,
-    "scrollLeft": -206.39999999999972,
+    "scrollTop": -404.8000000000001,
+    "scrollLeft": -399.2000000000001,
     "zoomLevel": 0.6,
     "show": {
       "tableComment": true,
@@ -258,7 +258,7 @@
           "active": false,
           "left": 8.7778,
           "top": 20.7999,
-          "zIndex": 614,
+          "zIndex": 57,
           "widthName": 60,
           "widthComment": 60,
           "color": "#917575"
@@ -390,7 +390,7 @@
           "active": false,
           "left": 12.5334,
           "top": 558.6666,
-          "zIndex": 565,
+          "zIndex": 50,
           "widthName": 60,
           "widthComment": 60,
           "color": "#DD0E97"
@@ -589,9 +589,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 529.8,
-          "top": 332,
-          "zIndex": 617,
+          "left": 526.6,
+          "top": 311.2,
+          "zIndex": 53,
           "widthName": 60,
           "widthComment": 60,
           "color": "#B88F58"
@@ -769,7 +769,7 @@
           "active": false,
           "left": 7.0001,
           "top": 292.4446,
-          "zIndex": 563,
+          "zIndex": 49,
           "widthName": 60,
           "widthComment": 60,
           "color": "#00FF68"
@@ -853,11 +853,12 @@
         ],
         "ui": {
           "active": false,
-          "left": 1014.4,
-          "top": 44.6,
-          "zIndex": 597,
+          "left": 1443.2,
+          "top": 52.3333,
+          "zIndex": 63,
           "widthName": 60,
-          "widthComment": 60
+          "widthComment": 60,
+          "color": "#FF0000"
         },
         "visible": true,
         "id": "573aef21-1ac7-489c-8a1b-f90cfc307cff"
@@ -944,7 +945,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -967,7 +968,7 @@
               "autoIncrement": false,
               "primaryKey": false,
               "unique": false,
-              "notNull": false
+              "notNull": true
             },
             "ui": {
               "active": false,
@@ -1030,9 +1031,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 482.8,
-          "top": 20.4,
-          "zIndex": 608,
+          "left": 727.6,
+          "top": 14,
+          "zIndex": 58,
           "widthName": 60,
           "widthComment": 60,
           "color": "#E6931A"
@@ -1162,9 +1163,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 524.4,
-          "top": 590.2,
-          "zIndex": 534,
+          "left": 731.6,
+          "top": 611.8,
+          "zIndex": 45,
           "widthName": 90.1689453125,
           "widthComment": 60,
           "color": "#5E17DC"
@@ -1294,9 +1295,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 287,
-          "top": 898.8031,
-          "zIndex": 590,
+          "left": 739.8,
+          "top": 932.4031,
+          "zIndex": 46,
           "widthName": 60,
           "widthComment": 60,
           "color": "#581FBC"
@@ -1308,29 +1309,6 @@
         "name": "wyniki",
         "comment": "",
         "columns": [
-          {
-            "name": "id_wynik",
-            "comment": "",
-            "dataType": "INT",
-            "default": "",
-            "option": {
-              "autoIncrement": true,
-              "primaryKey": true,
-              "unique": true,
-              "notNull": true
-            },
-            "ui": {
-              "active": false,
-              "pk": true,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 60,
-              "widthDefault": 60
-            },
-            "id": "d48dec6e-66d6-443d-b1b8-a7ad0a113edb"
-          },
           {
             "name": "id_rozgrywka",
             "comment": "",
@@ -1449,11 +1427,12 @@
         ],
         "ui": {
           "active": false,
-          "left": 1008.4443,
-          "top": 596.2924,
-          "zIndex": 665,
+          "left": 1435.7777,
+          "top": 660.5591,
+          "zIndex": 61,
           "widthName": 60,
-          "widthComment": 60
+          "widthComment": 60,
+          "color": "#EF0C0C"
         },
         "visible": true,
         "id": "86a75c57-fe9a-4c52-bf2e-43f6b25d5160"
@@ -1534,11 +1513,12 @@
         ],
         "ui": {
           "active": false,
-          "left": 1006.8,
-          "top": 296.4031,
-          "zIndex": 640,
+          "left": 1430.2,
+          "top": 364.2031,
+          "zIndex": 62,
           "widthName": 61.236328125,
-          "widthComment": 60
+          "widthComment": 60,
+          "color": "#FF0400"
         },
         "visible": true,
         "id": "a518709e-a63e-4e1b-904c-936b86bfd8eb"
@@ -1688,11 +1668,12 @@
         ],
         "ui": {
           "active": false,
-          "left": 735.2895,
-          "top": 901.1812,
-          "zIndex": 591,
+          "left": 1020.8895,
+          "top": 325.1812,
+          "zIndex": 54,
           "widthName": 60,
-          "widthComment": 60
+          "widthComment": 60,
+          "color": "#FF8300"
         },
         "visible": true,
         "id": "208b32e4-8312-4aa8-8916-bb62f1402736"
@@ -1715,7 +1696,7 @@
             "de737536-f024-4d33-825a-e0022e37c4d0"
           ],
           "x": 403.04586640625,
-          "y": 84.17490000000001,
+          "y": 63.0499,
           "direction": "right"
         },
         "end": {
@@ -1723,8 +1704,8 @@
           "columnIds": [
             "b2f860c0-d86f-4ace-97ff-3191d2b7d125"
           ],
-          "x": 482.8,
-          "y": 126.65,
+          "x": 727.6,
+          "y": 173.375,
           "direction": "left"
         },
         "constraintName": "fk_gra_to_inventory",
@@ -1740,17 +1721,17 @@
           "columnIds": [
             "dc55513f-be62-44e8-938e-1343718259e2"
           ],
-          "x": 705.739697265625,
-          "y": 232.9,
-          "direction": "bottom"
+          "x": 727.6,
+          "y": 67.125,
+          "direction": "left"
         },
         "end": {
           "tableId": "3371e6d2-2bc2-4d41-a933-d662f55ef419",
           "columnIds": [
             "0b8ebd18-6e14-43c7-b06c-bd2a00ee2e0d"
           ],
-          "x": 705.72724609375,
-          "y": 332,
+          "x": 702.52724609375,
+          "y": 311.2,
           "direction": "top"
         },
         "constraintName": "fk_inventory_to_rental",
@@ -1767,7 +1748,7 @@
             "3d93be43-6cfd-4247-98f7-78534fbeece4"
           ],
           "x": 364.13398593750003,
-          "y": 587.2499333333333,
+          "y": 580.1041,
           "direction": "right"
         },
         "end": {
@@ -1775,8 +1756,8 @@
           "columnIds": [
             "adaf96e8-3b5c-40aa-ae5c-42545ee90782"
           ],
-          "x": 529.8,
-          "y": 506.75,
+          "x": 526.6,
+          "y": 485.95,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_rental",
@@ -1793,7 +1774,7 @@
             "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
           ],
           "x": 396.716896875,
-          "y": 345.5696,
+          "y": 327.8612666666666,
           "direction": "right"
         },
         "end": {
@@ -1801,8 +1782,8 @@
           "columnIds": [
             "59a83026-ad26-423e-8ffe-f816e5dd7e53"
           ],
-          "x": 529.8,
-          "y": 390.25,
+          "x": 526.6,
+          "y": 369.45,
           "direction": "left"
         },
         "constraintName": "fk_seller_to_rental",
@@ -1818,17 +1799,17 @@
           "columnIds": [
             "de737536-f024-4d33-825a-e0022e37c4d0"
           ],
-          "x": 205.911833203125,
-          "y": 274.2999,
-          "direction": "bottom"
+          "x": 403.04586640625,
+          "y": 147.5499,
+          "direction": "right"
         },
         "end": {
           "tableId": "32791a27-6207-4aab-8dd2-30304cc80da8",
           "columnIds": [
             "051572e4-57f5-411e-8316-5d4a17a55f70"
           ],
-          "x": 524.4,
-          "y": 718.825,
+          "x": 731.6,
+          "y": 697.55,
           "direction": "left"
         },
         "constraintName": "fk_gra_to_inventory_shop",
@@ -1844,18 +1825,18 @@
           "columnIds": [
             "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
           ],
-          "x": 201.8584984375,
-          "y": 504.9446,
-          "direction": "bottom"
+          "x": 396.716896875,
+          "y": 469.52793333333324,
+          "direction": "right"
         },
         "end": {
           "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
           "columnIds": [
             "e4cf4ba6-00b1-4e95-a283-07fa6939ee37"
           ],
-          "x": 560.8587646484375,
-          "y": 898.8031,
-          "direction": "top"
+          "x": 739.8,
+          "y": 1061.0281,
+          "direction": "left"
         },
         "constraintName": "fk_seller_to_sale",
         "visible": true,
@@ -1870,17 +1851,17 @@
           "columnIds": [
             "d776bfb2-b0ab-47c5-ae6a-4711bede9e7c"
           ],
-          "x": 524.4,
-          "y": 633.075,
-          "direction": "left"
+          "x": 923.93203125,
+          "y": 783.3,
+          "direction": "bottom"
         },
         "end": {
           "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
           "columnIds": [
             "e29739be-4507-4526-b0e6-969bf81d5980"
           ],
-          "x": 378.2862548828125,
-          "y": 898.8031,
+          "x": 922.372509765625,
+          "y": 932.4031,
           "direction": "top"
         },
         "constraintName": "fk_inventory_shop_to_sale",
@@ -1896,17 +1877,17 @@
           "columnIds": [
             "3d93be43-6cfd-4247-98f7-78534fbeece4"
           ],
-          "x": 188.33369296875,
-          "y": 730.1666,
-          "direction": "bottom"
+          "x": 364.13398593750003,
+          "y": 622.9791,
+          "direction": "right"
         },
         "end": {
           "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
           "columnIds": [
             "76a5b71e-6071-4732-b87d-e5e71d6163f5"
           ],
-          "x": 287,
-          "y": 984.5531,
+          "x": 739.8,
+          "y": 975.2781,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_sale",
@@ -1923,7 +1904,7 @@
             "de737536-f024-4d33-825a-e0022e37c4d0"
           ],
           "x": 403.04586640625,
-          "y": 210.9249,
+          "y": 232.0499,
           "direction": "right"
         },
         "end": {
@@ -1931,8 +1912,8 @@
           "columnIds": [
             "eb567eca-7cb3-4449-b54b-c1f86b742844"
           ],
-          "x": 1014.4,
-          "y": 109.85,
+          "x": 1443.2,
+          "y": 117.58330000000001,
           "direction": "left"
         },
         "constraintName": "fk_gra_to_turnieje",
@@ -1948,8 +1929,8 @@
           "columnIds": [
             "cc78b50f-1dde-4acd-b9e7-e9e1c528b787"
           ],
-          "x": 1191.19296875,
-          "y": 175.1,
+          "x": 1619.99296875,
+          "y": 182.8333,
           "direction": "bottom"
         },
         "end": {
@@ -1957,8 +1938,8 @@
           "columnIds": [
             "48434ba4-4f39-47a7-ac22-5b00385f3ad1"
           ],
-          "x": 1192.971630859375,
-          "y": 296.4031,
+          "x": 1616.371630859375,
+          "y": 364.2031,
           "direction": "top"
         },
         "constraintName": "fk_turnieje_to_rozgrywka",
@@ -1974,8 +1955,8 @@
           "columnIds": [
             "1378a069-ec36-49e2-9f19-c56642fc391d"
           ],
-          "x": 1192.971630859375,
-          "y": 426.9031,
+          "x": 1616.371630859375,
+          "y": 494.7031,
           "direction": "bottom"
         },
         "end": {
@@ -1983,8 +1964,8 @@
           "columnIds": [
             "2b5bbe79-e06e-4a23-b1b4-c8fddb2f2567"
           ],
-          "x": 1191.236536328125,
-          "y": 596.2924,
+          "x": 1618.569936328125,
+          "y": 660.5591,
           "direction": "top"
         },
         "constraintName": "fk_rozgrywka_to_wyniki",
@@ -2001,7 +1982,7 @@
             "3d93be43-6cfd-4247-98f7-78534fbeece4"
           ],
           "x": 364.13398593750003,
-          "y": 701.5832666666665,
+          "y": 708.7291,
           "direction": "right"
         },
         "end": {
@@ -2009,8 +1990,8 @@
           "columnIds": [
             "b850b040-550d-470b-a419-e79e4eecf2fd"
           ],
-          "x": 1008.4443,
-          "y": 692.2924,
+          "x": 1435.7777,
+          "y": 746.3091,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_wyniki",
@@ -2026,18 +2007,18 @@
           "columnIds": [
             "0a9d6566-2496-4fe5-89b5-5e6d35442c04"
           ],
-          "x": 705.72724609375,
-          "y": 565,
-          "direction": "bottom"
+          "x": 878.4544921875,
+          "y": 427.7,
+          "direction": "right"
         },
         "end": {
           "tableId": "208b32e4-8312-4aa8-8916-bb62f1402736",
           "columnIds": [
             "545d8089-8173-49e7-afd2-ca7e57c68ae2"
           ],
-          "x": 917.8588359375,
-          "y": 901.1812,
-          "direction": "top"
+          "x": 1020.8895,
+          "y": 357.1812,
+          "direction": "left"
         },
         "constraintName": "fk_rental_to_outlet",
         "visible": true,
@@ -2053,7 +2034,7 @@
             "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
           ],
           "x": 396.716896875,
-          "y": 451.8196,
+          "y": 398.6945999999999,
           "direction": "right"
         },
         "end": {
@@ -2061,8 +2042,8 @@
           "columnIds": [
             "8308525a-bf77-443c-a5a1-d9949ee868fb"
           ],
-          "x": 735.2895,
-          "y": 1045.1812,
+          "x": 1020.8895,
+          "y": 421.1812,
           "direction": "left"
         },
         "constraintName": "fk_seller_to_outlet",
@@ -2079,7 +2060,7 @@
             "3d93be43-6cfd-4247-98f7-78534fbeece4"
           ],
           "x": 364.13398593750003,
-          "y": 644.4165999999999,
+          "y": 665.8541,
           "direction": "right"
         },
         "end": {
@@ -2087,8 +2068,8 @@
           "columnIds": [
             "32cf51d4-6cee-4a55-9f03-5a286b3f51d2"
           ],
-          "x": 735.2895,
-          "y": 949.1812,
+          "x": 1020.8895,
+          "y": 485.1812,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_outlet",
