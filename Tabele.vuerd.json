@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -404.8000000000001,
-    "scrollLeft": -399.2000000000001,
-    "zoomLevel": 0.6,
+    "scrollTop": -524.8000000000008,
+    "scrollLeft": -580.7999999999998,
+    "zoomLevel": 0.5,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -116,7 +116,7 @@
             "id": "5d160004-59dc-413d-8775-4d1dc6910d5f"
           },
           {
-            "name": "max-ilosc_graczy",
+            "name": "max_ilosc_graczy",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -131,7 +131,7 @@
               "pk": false,
               "fk": false,
               "pfk": false,
-              "widthName": 102.41357421875,
+              "widthName": 105.314453125,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -229,36 +229,13 @@
               "widthDefault": 60
             },
             "id": "644d05c1-588e-4a0d-ac95-03f2569d8dfc"
-          },
-          {
-            "name": "zasady",
-            "comment": "",
-            "dataType": "VARCHAR",
-            "default": "",
-            "option": {
-              "autoIncrement": false,
-              "primaryKey": false,
-              "unique": false,
-              "notNull": false
-            },
-            "ui": {
-              "active": false,
-              "pk": false,
-              "fk": false,
-              "pfk": false,
-              "widthName": 60,
-              "widthComment": 60,
-              "widthDataType": 64.6005859375,
-              "widthDefault": 60
-            },
-            "id": "1c2752a2-36bc-48d0-b59c-644ad8d221bc"
           }
         ],
         "ui": {
           "active": false,
           "left": 8.7778,
-          "top": 20.7999,
-          "zIndex": 57,
+          "top": 18.1333,
+          "zIndex": 135,
           "widthName": 60,
           "widthComment": 60,
           "color": "#917575"
@@ -390,7 +367,7 @@
           "active": false,
           "left": 12.5334,
           "top": 558.6666,
-          "zIndex": 50,
+          "zIndex": 108,
           "widthName": 60,
           "widthComment": 60,
           "color": "#DD0E97"
@@ -399,11 +376,11 @@
         "id": "93a4a5bd-4069-40c2-a705-a262c704a872"
       },
       {
-        "name": "rental",
+        "name": "wynajem",
         "comment": "",
         "columns": [
           {
-            "name": "id_rental",
+            "name": "id_wynaje",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -472,7 +449,7 @@
             "id": "adaf96e8-3b5c-40aa-ae5c-42545ee90782"
           },
           {
-            "name": "id_seller",
+            "name": "id_sprzedawcy",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -487,7 +464,7 @@
               "pk": false,
               "fk": true,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 87.9853515625,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -544,7 +521,7 @@
             "name": "usterki",
             "comment": "",
             "dataType": "BOOLEAN",
-            "default": "FASLE",
+            "default": "FALSE",
             "option": {
               "autoIncrement": false,
               "primaryKey": false,
@@ -591,7 +568,7 @@
           "active": false,
           "left": 526.6,
           "top": 311.2,
-          "zIndex": 53,
+          "zIndex": 138,
           "widthName": 60,
           "widthComment": 60,
           "color": "#B88F58"
@@ -600,11 +577,11 @@
         "id": "3371e6d2-2bc2-4d41-a933-d662f55ef419"
       },
       {
-        "name": "seller",
+        "name": "sprzedawcy",
         "comment": "",
         "columns": [
           {
-            "name": "id_seller",
+            "name": "id_sprzedawcy",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -619,7 +596,7 @@
               "pk": true,
               "fk": false,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 87.9853515625,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -696,7 +673,7 @@
             "id": "5e0cf9d3-bb9a-4f70-8978-0981792f44a7"
           },
           {
-            "name": "adress",
+            "name": "adres",
             "comment": "",
             "dataType": "VARCHAR",
             "default": "",
@@ -767,10 +744,10 @@
         ],
         "ui": {
           "active": false,
-          "left": 7.0001,
-          "top": 292.4446,
-          "zIndex": 49,
-          "widthName": 60,
+          "left": 11.5556,
+          "top": 297.7778,
+          "zIndex": 134,
+          "widthName": 70.63720703125,
           "widthComment": 60,
           "color": "#00FF68"
         },
@@ -855,7 +832,7 @@
           "active": false,
           "left": 1443.2,
           "top": 52.3333,
-          "zIndex": 63,
+          "zIndex": 144,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF0000"
@@ -864,7 +841,7 @@
         "id": "573aef21-1ac7-489c-8a1b-f90cfc307cff"
       },
       {
-        "name": "inventory",
+        "name": "spichlerz",
         "comment": "",
         "columns": [
           {
@@ -1033,7 +1010,7 @@
           "active": false,
           "left": 727.6,
           "top": 14,
-          "zIndex": 58,
+          "zIndex": 141,
           "widthName": 60,
           "widthComment": 60,
           "color": "#E6931A"
@@ -1042,7 +1019,7 @@
         "id": "c6644962-f5bb-4f75-bf3e-78dbb8697e6c"
       },
       {
-        "name": "inventory_shop",
+        "name": "spichlerz_sklep",
         "comment": "",
         "columns": [
           {
@@ -1165,8 +1142,8 @@
           "active": false,
           "left": 731.6,
           "top": 611.8,
-          "zIndex": 45,
-          "widthName": 90.1689453125,
+          "zIndex": 143,
+          "widthName": 90.87353515625,
           "widthComment": 60,
           "color": "#5E17DC"
         },
@@ -1297,7 +1274,7 @@
           "active": false,
           "left": 739.8,
           "top": 932.4031,
-          "zIndex": 46,
+          "zIndex": 95,
           "widthName": 60,
           "widthComment": 60,
           "color": "#581FBC"
@@ -1428,8 +1405,8 @@
         "ui": {
           "active": false,
           "left": 1435.7777,
-          "top": 660.5591,
-          "zIndex": 61,
+          "top": 661.8924,
+          "zIndex": 89,
           "widthName": 60,
           "widthComment": 60,
           "color": "#EF0C0C"
@@ -1514,8 +1491,8 @@
         "ui": {
           "active": false,
           "left": 1430.2,
-          "top": 364.2031,
-          "zIndex": 62,
+          "top": 362.8698,
+          "zIndex": 88,
           "widthName": 61.236328125,
           "widthComment": 60,
           "color": "#FF0400"
@@ -1670,7 +1647,7 @@
           "active": false,
           "left": 1020.8895,
           "top": 325.1812,
-          "zIndex": 54,
+          "zIndex": 90,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF8300"
@@ -1695,8 +1672,8 @@
           "columnIds": [
             "de737536-f024-4d33-825a-e0022e37c4d0"
           ],
-          "x": 403.04586640625,
-          "y": 63.0499,
+          "x": 405.9467453125,
+          "y": 56.966633333333334,
           "direction": "right"
         },
         "end": {
@@ -1730,7 +1707,7 @@
           "columnIds": [
             "0b8ebd18-6e14-43c7-b06c-bd2a00ee2e0d"
           ],
-          "x": 702.52724609375,
+          "x": 716.519921875,
           "y": 311.2,
           "direction": "top"
         },
@@ -1773,8 +1750,8 @@
           "columnIds": [
             "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
           ],
-          "x": 396.716896875,
-          "y": 327.8612666666666,
+          "x": 401.272396875,
+          "y": 333.19446666666664,
           "direction": "right"
         },
         "end": {
@@ -1799,8 +1776,8 @@
           "columnIds": [
             "de737536-f024-4d33-825a-e0022e37c4d0"
           ],
-          "x": 403.04586640625,
-          "y": 147.5499,
+          "x": 405.9467453125,
+          "y": 134.63330000000002,
           "direction": "right"
         },
         "end": {
@@ -1825,8 +1802,8 @@
           "columnIds": [
             "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
           ],
-          "x": 396.716896875,
-          "y": 469.52793333333324,
+          "x": 401.272396875,
+          "y": 474.86113333333327,
           "direction": "right"
         },
         "end": {
@@ -1903,8 +1880,8 @@
           "columnIds": [
             "de737536-f024-4d33-825a-e0022e37c4d0"
           ],
-          "x": 403.04586640625,
-          "y": 232.0499,
+          "x": 405.9467453125,
+          "y": 212.2999666666667,
           "direction": "right"
         },
         "end": {
@@ -1939,7 +1916,7 @@
             "48434ba4-4f39-47a7-ac22-5b00385f3ad1"
           ],
           "x": 1616.371630859375,
-          "y": 364.2031,
+          "y": 362.8698,
           "direction": "top"
         },
         "constraintName": "fk_turnieje_to_rozgrywka",
@@ -1956,7 +1933,7 @@
             "1378a069-ec36-49e2-9f19-c56642fc391d"
           ],
           "x": 1616.371630859375,
-          "y": 494.7031,
+          "y": 493.3698,
           "direction": "bottom"
         },
         "end": {
@@ -1965,7 +1942,7 @@
             "2b5bbe79-e06e-4a23-b1b4-c8fddb2f2567"
           ],
           "x": 1618.569936328125,
-          "y": 660.5591,
+          "y": 661.8924,
           "direction": "top"
         },
         "constraintName": "fk_rozgrywka_to_wyniki",
@@ -1991,7 +1968,7 @@
             "b850b040-550d-470b-a419-e79e4eecf2fd"
           ],
           "x": 1435.7777,
-          "y": 746.3091,
+          "y": 747.6424,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_wyniki",
@@ -2007,7 +1984,7 @@
           "columnIds": [
             "0a9d6566-2496-4fe5-89b5-5e6d35442c04"
           ],
-          "x": 878.4544921875,
+          "x": 906.43984375,
           "y": 427.7,
           "direction": "right"
         },
@@ -2033,8 +2010,8 @@
           "columnIds": [
             "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
           ],
-          "x": 396.716896875,
-          "y": 398.6945999999999,
+          "x": 401.272396875,
+          "y": 404.02779999999996,
           "direction": "right"
         },
         "end": {
