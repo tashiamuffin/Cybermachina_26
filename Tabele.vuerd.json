@@ -3,9 +3,9 @@
     "version": "2.2.11",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -524.8000000000008,
-    "scrollLeft": -580.7999999999998,
-    "zoomLevel": 0.5,
+    "scrollTop": -173.5999999999999,
+    "scrollLeft": -267.2,
+    "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
       "columnComment": true,
@@ -235,7 +235,7 @@
           "active": false,
           "left": 8.7778,
           "top": 18.1333,
-          "zIndex": 135,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 60,
           "color": "#917575"
@@ -367,7 +367,7 @@
           "active": false,
           "left": 12.5334,
           "top": 558.6666,
-          "zIndex": 108,
+          "zIndex": 3,
           "widthName": 60,
           "widthComment": 60,
           "color": "#DD0E97"
@@ -403,8 +403,8 @@
             "id": "0a9d6566-2496-4fe5-89b5-5e6d35442c04"
           },
           {
-            "name": "id_inv",
-            "comment": "",
+            "name": "id_spichlerz",
+            "comment": "finish him",
             "dataType": "INT",
             "default": "",
             "option": {
@@ -418,12 +418,12 @@
               "pk": false,
               "fk": true,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 70.6435546875,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
             },
-            "id": "0b8ebd18-6e14-43c7-b06c-bd2a00ee2e0d"
+            "id": "9a69720e-64eb-45f6-95f9-bce7450f1f1a"
           },
           {
             "name": "id_klienta",
@@ -567,8 +567,8 @@
         "ui": {
           "active": false,
           "left": 526.6,
-          "top": 311.2,
-          "zIndex": 138,
+          "top": 327.2,
+          "zIndex": 61,
           "widthName": 60,
           "widthComment": 60,
           "color": "#B88F58"
@@ -746,7 +746,7 @@
           "active": false,
           "left": 11.5556,
           "top": 297.7778,
-          "zIndex": 134,
+          "zIndex": 45,
           "widthName": 70.63720703125,
           "widthComment": 60,
           "color": "#00FF68"
@@ -832,7 +832,7 @@
           "active": false,
           "left": 1443.2,
           "top": 52.3333,
-          "zIndex": 144,
+          "zIndex": 7,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF0000"
@@ -845,7 +845,7 @@
         "comment": "",
         "columns": [
           {
-            "name": "id_inv",
+            "name": "id_spichlerz",
             "comment": "finish him",
             "dataType": "INT",
             "default": "",
@@ -860,7 +860,7 @@
               "pk": true,
               "fk": false,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 70.6435546875,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -1008,9 +1008,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 727.6,
-          "top": 14,
-          "zIndex": 141,
+          "left": 796.4,
+          "top": 17.2,
+          "zIndex": 59,
           "widthName": 60,
           "widthComment": 60,
           "color": "#E6931A"
@@ -1023,7 +1023,7 @@
         "comment": "",
         "columns": [
           {
-            "name": "id_inv_shop",
+            "name": "id_spicherz_sklep",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -1038,7 +1038,7 @@
               "pk": true,
               "fk": false,
               "pfk": false,
-              "widthName": 71.38623046875,
+              "widthName": 105.33349609375,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
@@ -1140,9 +1140,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 731.6,
-          "top": 611.8,
-          "zIndex": 143,
+          "left": 806.8,
+          "top": 567,
+          "zIndex": 36,
           "widthName": 90.87353515625,
           "widthComment": 60,
           "color": "#5E17DC"
@@ -1178,7 +1178,7 @@
             "id": "ea9038b0-685d-49e4-a269-197d1f446f6a"
           },
           {
-            "name": "id_inv_shop",
+            "name": "id_spicherz_sklep",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -1193,15 +1193,15 @@
               "pk": false,
               "fk": true,
               "pfk": false,
-              "widthName": 71.38623046875,
+              "widthName": 105.33349609375,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
             },
-            "id": "e29739be-4507-4526-b0e6-969bf81d5980"
+            "id": "d07586c0-5f70-4cc6-8bda-94d72a99f526"
           },
           {
-            "name": "id_seller",
+            "name": "id_sprzedawcy",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -1216,12 +1216,12 @@
               "pk": false,
               "fk": true,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 87.9853515625,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
             },
-            "id": "e4cf4ba6-00b1-4e95-a283-07fa6939ee37"
+            "id": "5dbff1c3-7e8c-48bd-8896-c3d4bd19bac1"
           },
           {
             "name": "id_klienta",
@@ -1272,9 +1272,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 739.8,
-          "top": 932.4031,
-          "zIndex": 95,
+          "left": 816.6,
+          "top": 884.4031,
+          "zIndex": 39,
           "widthName": 60,
           "widthComment": 60,
           "color": "#581FBC"
@@ -1406,7 +1406,7 @@
           "active": false,
           "left": 1435.7777,
           "top": 661.8924,
-          "zIndex": 89,
+          "zIndex": 2,
           "widthName": 60,
           "widthComment": 60,
           "color": "#EF0C0C"
@@ -1492,7 +1492,7 @@
           "active": false,
           "left": 1430.2,
           "top": 362.8698,
-          "zIndex": 88,
+          "zIndex": 1,
           "widthName": 61.236328125,
           "widthComment": 60,
           "color": "#FF0400"
@@ -1510,9 +1510,9 @@
             "dataType": "INT",
             "default": "",
             "option": {
-              "autoIncrement": false,
+              "autoIncrement": true,
               "primaryKey": true,
-              "unique": false,
+              "unique": true,
               "notNull": true
             },
             "ui": {
@@ -1528,8 +1528,8 @@
             "id": "24f52baf-0662-4cec-96d5-744c161d71de"
           },
           {
-            "name": "id_rental",
-            "comment": "",
+            "name": "id_spichlerz",
+            "comment": "finish him",
             "dataType": "INT",
             "default": "",
             "option": {
@@ -1543,15 +1543,15 @@
               "pk": false,
               "fk": true,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 70.6435546875,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
             },
-            "id": "545d8089-8173-49e7-afd2-ca7e57c68ae2"
+            "id": "700ae1c4-88ed-4e91-b659-c612be67b542"
           },
           {
-            "name": "id_seller",
+            "name": "id_sprzedawcy",
             "comment": "",
             "dataType": "INT",
             "default": "",
@@ -1566,12 +1566,12 @@
               "pk": false,
               "fk": true,
               "pfk": false,
-              "widthName": 60,
+              "widthName": 87.9853515625,
               "widthComment": 60,
               "widthDataType": 60,
               "widthDefault": 60
             },
-            "id": "8308525a-bf77-443c-a5a1-d9949ee868fb"
+            "id": "e38492aa-d6d5-4d9f-827e-4b0ba40fef8e"
           },
           {
             "name": "id_klienta",
@@ -1645,9 +1645,9 @@
         ],
         "ui": {
           "active": false,
-          "left": 1020.8895,
-          "top": 325.1812,
-          "zIndex": 90,
+          "left": 1030.4895,
+          "top": 314.9526,
+          "zIndex": 57,
           "widthName": 60,
           "widthComment": 60,
           "color": "#FF8300"
@@ -1681,39 +1681,13 @@
           "columnIds": [
             "b2f860c0-d86f-4ace-97ff-3191d2b7d125"
           ],
-          "x": 727.6,
-          "y": 173.375,
+          "x": 796.4,
+          "y": 176.575,
           "direction": "left"
         },
         "constraintName": "fk_gra_to_inventory",
         "visible": true,
         "id": "3b218888-2ce9-4fcc-be54-41afb6baed54"
-      },
-      {
-        "identification": false,
-        "relationshipType": "ZeroN",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "c6644962-f5bb-4f75-bf3e-78dbb8697e6c",
-          "columnIds": [
-            "dc55513f-be62-44e8-938e-1343718259e2"
-          ],
-          "x": 727.6,
-          "y": 67.125,
-          "direction": "left"
-        },
-        "end": {
-          "tableId": "3371e6d2-2bc2-4d41-a933-d662f55ef419",
-          "columnIds": [
-            "0b8ebd18-6e14-43c7-b06c-bd2a00ee2e0d"
-          ],
-          "x": 716.519921875,
-          "y": 311.2,
-          "direction": "top"
-        },
-        "constraintName": "fk_inventory_to_rental",
-        "visible": true,
-        "id": "8e4b1729-6882-450f-bf5a-458c565aeffd"
       },
       {
         "identification": false,
@@ -1734,7 +1708,7 @@
             "adaf96e8-3b5c-40aa-ae5c-42545ee90782"
           ],
           "x": 526.6,
-          "y": 485.95,
+          "y": 501.95,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_rental",
@@ -1760,7 +1734,7 @@
             "59a83026-ad26-423e-8ffe-f816e5dd7e53"
           ],
           "x": 526.6,
-          "y": 369.45,
+          "y": 385.45,
           "direction": "left"
         },
         "constraintName": "fk_seller_to_rental",
@@ -1785,65 +1759,13 @@
           "columnIds": [
             "051572e4-57f5-411e-8316-5d4a17a55f70"
           ],
-          "x": 731.6,
-          "y": 697.55,
+          "x": 806.8,
+          "y": 652.75,
           "direction": "left"
         },
         "constraintName": "fk_gra_to_inventory_shop",
         "visible": true,
         "id": "a94b7229-9f2b-4f80-a140-44836b1e591f"
-      },
-      {
-        "identification": false,
-        "relationshipType": "ZeroN",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "674af040-b631-45ae-9c31-83780ad7dc75",
-          "columnIds": [
-            "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
-          ],
-          "x": 401.272396875,
-          "y": 474.86113333333327,
-          "direction": "right"
-        },
-        "end": {
-          "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
-          "columnIds": [
-            "e4cf4ba6-00b1-4e95-a283-07fa6939ee37"
-          ],
-          "x": 739.8,
-          "y": 1061.0281,
-          "direction": "left"
-        },
-        "constraintName": "fk_seller_to_sale",
-        "visible": true,
-        "id": "310cce3d-94d4-4f57-bb36-4f00a41f6454"
-      },
-      {
-        "identification": false,
-        "relationshipType": "ZeroN",
-        "startRelationshipType": "Dash",
-        "start": {
-          "tableId": "32791a27-6207-4aab-8dd2-30304cc80da8",
-          "columnIds": [
-            "d776bfb2-b0ab-47c5-ae6a-4711bede9e7c"
-          ],
-          "x": 923.93203125,
-          "y": 783.3,
-          "direction": "bottom"
-        },
-        "end": {
-          "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
-          "columnIds": [
-            "e29739be-4507-4526-b0e6-969bf81d5980"
-          ],
-          "x": 922.372509765625,
-          "y": 932.4031,
-          "direction": "top"
-        },
-        "constraintName": "fk_inventory_shop_to_sale",
-        "visible": true,
-        "id": "2b406217-6940-4b2b-a8c5-825f1a9b1075"
       },
       {
         "identification": false,
@@ -1863,8 +1785,8 @@
           "columnIds": [
             "76a5b71e-6071-4732-b87d-e5e71d6163f5"
           ],
-          "x": 739.8,
-          "y": 975.2781,
+          "x": 816.6,
+          "y": 927.2781,
           "direction": "left"
         },
         "constraintName": "fk_klienici_to_sale",
@@ -1980,26 +1902,78 @@
         "relationshipType": "ZeroN",
         "startRelationshipType": "Dash",
         "start": {
-          "tableId": "3371e6d2-2bc2-4d41-a933-d662f55ef419",
+          "tableId": "93a4a5bd-4069-40c2-a705-a262c704a872",
           "columnIds": [
-            "0a9d6566-2496-4fe5-89b5-5e6d35442c04"
+            "3d93be43-6cfd-4247-98f7-78534fbeece4"
           ],
-          "x": 906.43984375,
-          "y": 427.7,
+          "x": 364.13398593750003,
+          "y": 665.8541,
           "direction": "right"
         },
         "end": {
           "tableId": "208b32e4-8312-4aa8-8916-bb62f1402736",
           "columnIds": [
-            "545d8089-8173-49e7-afd2-ca7e57c68ae2"
+            "32cf51d4-6cee-4a55-9f03-5a286b3f51d2"
           ],
-          "x": 1020.8895,
-          "y": 357.1812,
+          "x": 1030.4895,
+          "y": 474.9526,
           "direction": "left"
         },
-        "constraintName": "fk_rental_to_outlet",
+        "constraintName": "fk_klienici_to_outlet",
         "visible": true,
-        "id": "8eced521-11e9-4284-8784-664e3a907d19"
+        "id": "38525f19-318e-4481-aff8-cde2a05031d0"
+      },
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "674af040-b631-45ae-9c31-83780ad7dc75",
+          "columnIds": [
+            "8f4ac6bd-ce6f-435f-9171-67dacefd2644"
+          ],
+          "x": 401.272396875,
+          "y": 474.86113333333327,
+          "direction": "right"
+        },
+        "end": {
+          "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
+          "columnIds": [
+            "5dbff1c3-7e8c-48bd-8896-c3d4bd19bac1"
+          ],
+          "x": 816.6,
+          "y": 1013.0281,
+          "direction": "left"
+        },
+        "constraintName": "fk_sprzedawcy_to_sale",
+        "visible": true,
+        "id": "725c89b6-5975-4a09-95ac-3538e3ac67bb"
+      },
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "32791a27-6207-4aab-8dd2-30304cc80da8",
+          "columnIds": [
+            "d776bfb2-b0ab-47c5-ae6a-4711bede9e7c"
+          ],
+          "x": 1006.346142578125,
+          "y": 738.5,
+          "direction": "bottom"
+        },
+        "end": {
+          "tableId": "7b886d75-d976-4e9f-90ac-4b2b2d07ac21",
+          "columnIds": [
+            "d07586c0-5f70-4cc6-8bda-94d72a99f526"
+          ],
+          "x": 1016.146142578125,
+          "y": 884.4031,
+          "direction": "top"
+        },
+        "constraintName": "fk_spichlerz_sklep_to_sale",
+        "visible": true,
+        "id": "399a32c8-b2c3-4249-87b0-9e1f87d20990"
       },
       {
         "identification": false,
@@ -2017,41 +1991,67 @@
         "end": {
           "tableId": "208b32e4-8312-4aa8-8916-bb62f1402736",
           "columnIds": [
-            "8308525a-bf77-443c-a5a1-d9949ee868fb"
+            "e38492aa-d6d5-4d9f-827e-4b0ba40fef8e"
           ],
-          "x": 1020.8895,
-          "y": 421.1812,
+          "x": 1030.4895,
+          "y": 410.9526,
           "direction": "left"
         },
-        "constraintName": "fk_seller_to_outlet",
+        "constraintName": "fk_sprzedawcy_to_outlet",
         "visible": true,
-        "id": "f28bdb9f-c276-47e4-8eec-dfded10266ca"
+        "id": "35fa0634-523f-4c01-bbf4-3f6590aad24b"
       },
       {
         "identification": false,
         "relationshipType": "ZeroN",
         "startRelationshipType": "Dash",
         "start": {
-          "tableId": "93a4a5bd-4069-40c2-a705-a262c704a872",
+          "tableId": "c6644962-f5bb-4f75-bf3e-78dbb8697e6c",
           "columnIds": [
-            "3d93be43-6cfd-4247-98f7-78534fbeece4"
+            "dc55513f-be62-44e8-938e-1343718259e2"
           ],
-          "x": 364.13398593750003,
-          "y": 665.8541,
-          "direction": "right"
+          "x": 1019.339697265625,
+          "y": 229.7,
+          "direction": "bottom"
         },
         "end": {
           "tableId": "208b32e4-8312-4aa8-8916-bb62f1402736",
           "columnIds": [
-            "32cf51d4-6cee-4a55-9f03-5a286b3f51d2"
+            "700ae1c4-88ed-4e91-b659-c612be67b542"
           ],
-          "x": 1020.8895,
-          "y": 485.1812,
+          "x": 1030.4895,
+          "y": 346.9526,
           "direction": "left"
         },
-        "constraintName": "fk_klienici_to_outlet",
+        "constraintName": "fk_spichlerz_to_outlet",
         "visible": true,
-        "id": "38525f19-318e-4481-aff8-cde2a05031d0"
+        "id": "8484379b-6e7b-4cc1-9367-d49d2140dc60"
+      },
+      {
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "c6644962-f5bb-4f75-bf3e-78dbb8697e6c",
+          "columnIds": [
+            "dc55513f-be62-44e8-938e-1343718259e2"
+          ],
+          "x": 796.4,
+          "y": 70.325,
+          "direction": "left"
+        },
+        "end": {
+          "tableId": "3371e6d2-2bc2-4d41-a933-d662f55ef419",
+          "columnIds": [
+            "9a69720e-64eb-45f6-95f9-bce7450f1f1a"
+          ],
+          "x": 716.519921875,
+          "y": 327.2,
+          "direction": "top"
+        },
+        "constraintName": "fk_spichlerz_to_wynajem",
+        "visible": true,
+        "id": "19367275-debd-4adc-ac89-2324c4be9815"
       }
     ]
   }
