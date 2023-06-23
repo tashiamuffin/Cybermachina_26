@@ -1,101 +1,101 @@
 ID,NAZWA,RODZAJ,CENA,CZAS_GRY,MIN_GRACZY,MAX_GRACZY,MIN_WIEK,TURNIEJOWE
-1,Brass: Birmingham,"ekonomiczna, strategiczna",250,150,2,4,14,0
-2,Star Wars: Rebelia,"strategiczna, science-fiction",390,210,2,4,14,0
-3,Wojna o Pierścień: Druga edycja,"przygodowa, fantasy",330,150,2,4,13,0
-4,Zaginiona Wyspa Arnak,"przygodowa, eksploracyjna",150,90,1,4,12,0
+1,Brass: Birmingham,"ekonomiczna",250,150,2,4,14,0
+2,Star Wars: Rebelia,"strategiczna",390,210,2,4,14,0
+3,Wojna o Pierścień: Druga edycja,"przygodowa",330,150,2,4,13,0
+4,Zaginiona Wyspa Arnak,"przygodowa",150,90,1,4,12,0
 5,Zamki Burgundii: BIG BOX,strategiczna,140,60,2,4,12,0
-6,Nemesis,"przygodowa, kooperacyjna",430,130,1,5,12,0
-7,Diuna: Imperium,"strategiczna, science-fiction",170,90,1,4,14,0
+6,Nemesis,"przygodowa",430,130,1,5,12,0
+7,Diuna: Imperium,"strategiczna",170,90,1,4,14,0
 8,Ark Nova,ekonomiczna,200,120,1,4,12,0
-9,Terraformacja Marsa,"strategiczna, symulacyjna, science-fiction",140,110,1,5,12,0
-10,Everdell,"karciana, ekonomiczna, fantasy",170,90,1,4,14,0
-11,Scythe,"ekonomiczna, science-fiction",270,110,1,5,14,0
-12,7 Cudów Świata: Pojedynek,"karciana, cywilizacyjna, ekonomiczna",80,40,2,2,10,0
-13,Cywilizacja: Poprzez Wieki,"karciana, cywilizacyjna, ekonomiczna",160,180,2,4,14,0
+9,Terraformacja Marsa,"strategiczna",140,110,1,5,12,0
+10,Everdell,"karciana",170,90,1,4,14,0
+11,Scythe,"ekonomiczna",270,110,1,5,14,0
+12,7 Cudów Świata: Pojedynek,"karciana",80,40,2,2,10,0
+13,Cywilizacja: Poprzez Wieki,"karciana",160,180,2,4,14,0
 14,Kaskadia,logiczna,110,40,1,4,10,0
-15,Brzdęk! Nie drażnij smoka,"przygodowa, fantasy",160,45,2,4,13,0
-16,On Mars,"strategiczna, science-fiction",540,120,1,4,14,0
-17,Aeon's End,"karciana, kooperacyjna",100,70,1,4,14,0
-18,Dominant Species: Władcy Ziemi,"strategiczna, survivalowa",280,180,2,6,12,0
+15,Brzdęk! Nie drażnij smoka,"przygodowa",160,45,2,4,13,0
+16,On Mars,"strategiczna",540,120,1,4,14,0
+17,Aeon's End,"karciana",100,70,1,4,14,0
+18,Dominant Species: Władcy Ziemi,"strategiczna",280,180,2,6,12,0
 19,Blood Rage,strategiczna,260,60,2,4,14,0
 20,Food Chain Magnate,ekonomiczna,260,180,2,5,14,0
-21,Projekt Gaja,"kooperacyjna, ekonomiczna, science-fiction",380,100,1,4,14,0
-22,Spirit Island,"kooperacyjna, fantasy",250,100,1,4,13,0
-23,This War of Mine: Gra planszowa,"kooperacyjna, survivalowa, przygodowa",190,80,1,6,18,0
-24,Posiadłość Szaleństwa: Druga Edycja,"logiczna, przygodowa, kryminalna",370,150,1,5,14,0
-25,Na skrzydłach,"strategiczna, karciana",140,50,1,5,10,0
+21,Projekt Gaja,"kooperacyjna",380,100,1,4,14,0
+22,Spirit Island,"kooperacyjna",250,100,1,4,13,0
+23,This War of Mine: Gra planszowa,"kooperacyjna",190,80,1,6,18,0
+24,Posiadłość Szaleństwa: Druga Edycja,"logiczna",370,150,1,5,14,0
+25,Na skrzydłach,"strategiczna",140,50,1,5,10,0
 26,Great Western Trail,ekonomiczna,180,60,2,4,12,0
-27,Mage Knight: Ultimate Edition,"przygodowa, kooperacyjna, fantasy",360,150,1,4,14,0
-28,Gloomhaven: Szczęki Lwa,"przygodowa, kooperacyjna, fantasy",270,70,1,4,14,0
-29,"Zamki Burgundii","strategiczna, ekonomiczna",100,60,2,4,12,0
-30,Dobry rok,"strategiczna, symulacyjna",135,45,1,5,8,0
-31,Spór o bór,"karciana, towarzyska",40,20,2,2,8,0
-32,Wiedźmia skała,"przygodowa, fantasy, taktyczna",110,60,2,4,12,0
-33,Kroniki zamku Avel,"kooperacyjna, fantasy",120,60,1,4,8,0
-34,Tzolk'in: Kalendarz Majów,"ekonomiczna, strategiczna",130,60,2,4,14,0
+27,Mage Knight: Ultimate Edition,"przygodowa",360,150,1,4,14,0
+28,Gloomhaven: Szczęki Lwa,"przygodowa",270,70,1,4,14,0
+29,"Zamki Burgundii","strategiczna",100,60,2,4,12,0
+30,Dobry rok,"strategiczna",135,45,1,5,8,0
+31,Spór o bór,"karciana",40,20,2,2,8,0
+32,Wiedźmia skała,"przygodowa",110,60,2,4,12,0
+33,Kroniki zamku Avel,"kooperacyjna",120,60,1,4,8,0
+34,Tzolk'in: Kalendarz Majów,"ekonomiczna",130,60,2,4,14,0
 35,Bonfire,towarzyska,130,80,1,4,12,0
-36,Łąka,"familijna, karciana",140,60,1,4,10,0
-37,Wyprawa do Eldorado,"przygodowa, wyścigowa",80,45,2,4,10,0
-38,Hero Realms,"karciana, fantasy",60,30,1,4,12,0
-39,Clash of Cultures: Monumentalna Edycja,"ekonomiczna, cywilizacyjna",410,200,2,4,14,0
-40,Nemesis:Lockdown,"survivalowa, kooperacyjna",540,120,1,5,12,0
-41,Ankh: Bogowie Egiptu,"mitologiczna, rywalizacyjna",300,90,2,5,14,0
-42,Root,"fantasy, konfliktowa",150,60,2,4,10,0
-43,Cthulhu: Death May Die,"kooperacyjna, horror, fantasy",350,90,1,5,14,0
-44,Podwodne Miasta,"strategiczna, karciana, cywilizacyjna",180,100,1,4,12,0
+36,Łąka,"familijna",140,60,1,4,10,0
+37,Wyprawa do Eldorado,"przygodowa",80,45,2,4,10,0
+38,Hero Realms,"karciana",60,30,1,4,12,0
+39,Clash of Cultures: Monumentalna Edycja,"ekonomiczna",410,200,2,4,14,0
+40,Nemesis:Lockdown,"survivalowa",540,120,1,5,12,0
+41,Ankh: Bogowie Egiptu,"mitologiczna",300,90,2,5,14,0
+42,Root,"fantasy",150,60,2,4,10,0
+43,Cthulhu: Death May Die,"kooperacyjna",350,90,1,5,14,0
+44,Podwodne Miasta,"strategiczna",180,100,1,4,12,0
 45,Calico,logiczna,100,30,1,4,13,0
 46,Weather Machine,ekonomiczna,600,90,1,4,14,0
-47,Dungeons & Dragons: Tyrants of the Underdark,"fantasy, rywalizacyjna",140,60,2,4,13,0
-48,Viticulture: Essential Edition,"ekonomiczna, symulacyjna",240,90,1,6,13,0
-49,Twilight Imperium: Świt Nowej Ery,"cywilizacyjna, ekonomiczna, fantasy",520,360,3,6,14,0
-50,Etherfields,"eksploracyjna, kooperacyjna, przygodowa",430,60,1,4,12,0
-51,Destinies,"przygodowa, fantasy",160,120,1,3,14,0
+47,Dungeons & Dragons: Tyrants of the Underdark,"fantasy",140,60,2,4,13,0
+48,Viticulture: Essential Edition,"ekonomiczna",240,90,1,6,13,0
+49,Twilight Imperium: Świt Nowej Ery,"cywilizacyjna",520,360,3,6,14,0
+50,Etherfields,"eksploracyjna",430,60,1,4,12,0
+51,Destinies,"przygodowa",160,120,1,3,14,0
 52,Paladyni Zachodniego Królestwa,strategiczna,120,100,1,4,12,0
-53,Cyklady,"mitologiczna, rywalizacyjna, cywilizacyjna",170,60,2,5,13,0
-54,Alchemicy,"fantasy, dedukcyjna",110,150,2,4,13,0
-55,Horror w Arkham: Gra karciana,"karciana, kooperacyjna, horror",140,90,1,2,14,0
-56,Władca Pierścieni: Podróże przez Śródziemie,"przygodowa, fantasy, kooperacyjna",320,90,1,5,14,0
-57,Ziemia,"ekonomiczna, karciana",140,60,1,5,13,0
-58,Frostpunk: Gra planszowa,"kooperacyjna, eksploracyjna, ekonomiczna",350,120,1,4,16,0
-59,Palec Boży,"familijna, towarzyska",100,20,2,4,8,0
-60,Karczma pod Pękatym Kuflem,"towarzyska, ekonomiczna",100,60,2,4,12,0
-61,Szarlatani z Pasikurowic,"familijna, fantasy, ekonomiczna",130,60,2,4,10,0
-62,Wsiąść do Pociągu: Europa,"strategiczna, familijna",140,30,2,5,8,1
-63,Doniczki,"karciana, logiczna",110,30,1,5,10,0
-64,Tajniacy,"kooperacyjna, towarzyska",40,15,2,8,10,0
+53,Cyklady,"mitologiczna",170,60,2,5,13,0
+54,Alchemicy,"fantasy",110,150,2,4,13,0
+55,Horror w Arkham: Gra karciana,"karciana",140,90,1,2,14,0
+56,Władca Pierścieni: Podróże przez Śródziemie,"przygodowa",320,90,1,5,14,0
+57,Ziemia,"ekonomiczna",140,60,1,5,13,0
+58,Frostpunk: Gra planszowa,"kooperacyjna",350,120,1,4,16,0
+59,Palec Boży,"familijna",100,20,2,4,8,0
+60,Karczma pod Pękatym Kuflem,"towarzyska",100,60,2,4,12,0
+61,Szarlatani z Pasikurowic,"familijna",130,60,2,4,10,0
+62,Wsiąść do Pociągu: Europa,"strategiczna",140,30,2,5,8,1
+63,Doniczki,"karciana",110,30,1,5,10,0
+64,Tajniacy,"kooperacyjna",40,15,2,8,10,0
 65,Carcassonne,strategiczna,70,30,2,5,7,1
-66,Splendor,"ekonomiczna, karciana",110,45,2,4,10,0
-67,To ja go tnę!,"towarzyska, karciana",70,45,2,6,14,0
-68,Monopoly,"ekonomiczna, rywalizacyjna",120,120,2,8,8,0
-69,Dobble,"familijna, towarzyska, karciana",40,10,2,8,6,0
-70,Dixit,"karciana, towarzyska",100,30,3,6,8,0
-71,Farmer,"familijna, ekonomiczna",70,20,2,6,7,0
-72,Sabotażysta,"kooperacyjna, karciana",45,30,3,10,8,0
-73,Catan,"strategiczna, rywalizacyjna, przygodowa",125,45,3,4,10,0
-74,Pędzące żółwie,"familijna, zręcznościowa",45,20,2,5,5,0
-75,Wsiąść do Pociągu: Azja,"strategiczna, familijna",120,45,2,6,8,0
-76,Wsiąść do Pociągu: Polska,"strategiczna, familijna",70,45,2,4,8,0
-77,Wsiąść do Pociągu: Dookoła Świata,"strategiczna, familijna",215,90,2,5,8,0
-78,Wsiąść do Pociągu: Japonia,"strategiczna, familijna",130,45,2,5,8,0
-79,Monopoly: The office,"ekonomiczna, rywalizacyjna",130,120,2,8,8,0
-80,Monopoly: Breaking bad,"ekonomiczna, rywalizacyjna",170,120,2,8,8,0
-81,Monopoly: Wrocław,"ekonomiczna, rywalizacyjna",110,120,2,8,8,0
-82,Monopoly: Queen,"ekonomiczna, rywalizacyjna",110,120,2,8,8,0
-83,Monopoly: Opole,"ekonomiczna, rywalizacyjna",140,120,2,8,8,0
-84,Dobble: Harry Potter,"familijna, towarzyska, karciana",40,15,2,8,6,0
-85,Dobble: Pixar,"familijna, towarzyska, karciana",50,10,2,8,6,0
-86,Dobble: Marvel,"familijna, towarzyska, karciana",40,10,2,8,6,0
-87,Taboo,"towarzyska, rywalizacyjna, słowna",110,20,4,10,12,0
-88,Jungle speed,"zręcznościowa, towarzyska",70,20,2,10,8,0
-89,Dobble: Wodoodporne,"familijna, towarzyska, karciana",60,15,2,8,6,0
-90,Kolejka,"familijna, ekonomiczna",75,60,2,5,12,0
+66,Splendor,"ekonomiczna",110,45,2,4,10,0
+67,To ja go tnę!,"towarzyska",70,45,2,6,14,0
+68,Monopoly,"ekonomiczna",120,120,2,8,8,0
+69,Dobble,"familijna",40,10,2,8,6,0
+70,Dixit,"karciana",100,30,3,6,8,0
+71,Farmer,"familijna",70,20,2,6,7,0
+72,Sabotażysta,"kooperacyjna",45,30,3,10,8,0
+73,Catan,"strategiczna",125,45,3,4,10,0
+74,Pędzące żółwie,"familijna",45,20,2,5,5,0
+75,Wsiąść do Pociągu: Azja,"strategiczna",120,45,2,6,8,0
+76,Wsiąść do Pociągu: Polska,"strategiczna",70,45,2,4,8,0
+77,Wsiąść do Pociągu: Dookoła Świata,"strategiczna",215,90,2,5,8,0
+78,Wsiąść do Pociągu: Japonia,"strategiczna",130,45,2,5,8,0
+79,Monopoly: The office,"ekonomiczna",130,120,2,8,8,0
+80,Monopoly: Breaking bad,"ekonomiczna",170,120,2,8,8,0
+81,Monopoly: Wrocław,"ekonomiczna",110,120,2,8,8,0
+82,Monopoly: Queen,"ekonomiczna",110,120,2,8,8,0
+83,Monopoly: Opole,"ekonomiczna",140,120,2,8,8,0
+84,Dobble: Harry Potter,"familijna",40,15,2,8,6,0
+85,Dobble: Pixar,"familijna",50,10,2,8,6,0
+86,Dobble: Marvel,"familijna",40,10,2,8,6,0
+87,Taboo,"towarzyska",110,20,4,10,12,0
+88,Jungle speed,"zręcznościowa",70,20,2,10,8,0
+89,Dobble: Wodoodporne,"familijna",60,15,2,8,6,0
+90,Kolejka,"familijna",75,60,2,5,12,0
 91,Scrabble,słowna,110,90,2,4,10,1
-92,Rummikub,"liczbowa, strategiczna",100,60,2,6,6,0
-93,Karty dżentelmenów,"karciana, towarzyska",40,60,3,15,18,0
+92,Rummikub,"liczbowa",100,60,2,6,6,0
+93,Karty dżentelmenów,"karciana",40,60,3,15,18,0
 94,Uno,karciana,20,30,2,10,8,0
-95,Jenga,"zręcznościowa, towarzyska",60,20,1,8,6,0
-96,Eurobusiness,"ekonomiczna, rywalizacyjna",30,90,2,5,14,0
-97,Boop,"logiczna, rywalizacyjna",160,20,2,2,10,0
-98,Mordercze krewetki,"karciane, towarzyskie",80,10,2,6,7,0
-99,The binding of Isaac: Four souls,"przygodowa, karciana",190,45,2,4,13,0
+95,Jenga,"zręcznościowa",60,20,1,8,6,0
+96,Eurobusiness,"ekonomiczna",30,90,2,5,14,0
+97,Boop,"logiczna",160,20,2,2,10,0
+98,Mordercze krewetki,"karciane",80,10,2,6,7,0
+99,The binding of Isaac: Four souls,"przygodowa",190,45,2,4,13,0
 100,Kuchenny poker,familijna,60,60,2,5,10,0
