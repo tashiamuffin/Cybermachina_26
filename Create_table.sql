@@ -1,229 +1,226 @@
--- DROP TABLE gra;
-
+DROP TABLE gra;
         
 CREATE TABLE gra
 (
-  id_gry           INT     NOT NULL AUTO_INCREMENT,
-  tytuł            CHAR    NOT NULL,
-  min_ilosc_graczy INT     NULL    ,
-  max_ilosc_graczy INT     NULL    ,
-  wiek             INT     NULL    ,
-  cena             FLOAT   NULL    ,
-  rodzaj           CHAR    NULL    ,
-  turniejowa       BOOLEAN NULL     DEFAULT FALSE,
-  PRIMARY KEY (id_gry)
+  id_gry     INT   NOT NULL PRIMARY KEY UNIQUE AUTO_INCREMENT,
+  tytuł      VARCHAR(255)  NOT NULL,
+  rodzaj     VARCHAR(255)  NULL    ,
+  cena       FLOAT NULL    ,
+  czas_gry   INT   NULL    ,
+  min_graczy INT   NULL    ,
+  max_graczy INT   NULL    ,
+  min_wiek   INT   NULL    ,
+  turniejowe FLOAT NULL     
 );
-
-ALTER TABLE gra
-  ADD CONSTRAINT UQ_id_gry UNIQUE (id_gry);
 
 ALTER TABLE gra
   ADD CONSTRAINT UQ_tytuł UNIQUE (tytuł);
 
-CREATE TABLE klienici
+DROP TABLE klienci;
+
+CREATE TABLE klienci
 (
-  id_klienta INT     NOT NULL AUTO_INCREMENT,
-  imie       CHAR    NOT NULL,
-  nazwisko   CHAR    NOT NULL,
-  wiek       INT     NOT NULL,
-  adres      VARCHAR(255) NOT NULL,
-  PRIMARY KEY (id_klienta)
+  id_klienta INT      NOT NULL PRIMARY KEY UNIQUE AUTO_INCREMENT,
+  wizyta     DATETIME NULL    ,
+  imię       VARCHAR(255)  NOT NULL,
+  nazwisko   VARCHAR(255)  NOT NULL,
+  wiek       INT      NOT NULL,
+  ulica      VARCHAR(255)  NOT NULL,
+  nr_domu    VARCHAR(255)  NULL    ,
+  telefon    VARCHAR(255)     NULL    
 );
 
-ALTER TABLE klienici
-  ADD CONSTRAINT UQ_id_klienta UNIQUE (id_klienta);
+DROP TABLE outlet;
 
 CREATE TABLE outlet
 (
-  id_outlet     INT      NOT NULL AUTO_INCREMENT,
-  id_spichlerz  INT      NOT NULL COMMENT 'finish him',
-  id_sprzedawcy INT      NOT NULL,
-  id_klienta    INT      NOT NULL,
-  czas_kupna    DATETIME NULL    ,
-  kwota         FLOAT    NULL    ,
-  PRIMARY KEY (id_outlet)
+  id_transakcji_outlet  INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_spichlerz_wynajem INT      NOT NULL,
+  cena_outlet           FLOAT    NULL    ,
+  wizyta                DATETIME NULL    ,
+  id_klienta            INT      NOT NULL,
+  id_pracownika         INT      NOT NULL
 );
 
-ALTER TABLE outlet
-  ADD CONSTRAINT UQ_id_outlet UNIQUE (id_outlet);
+DROP TABLE pracownicy;
 
-CREATE TABLE rozgrywka
+CREATE TABLE pracownicy
 (
-  id_rozgrywka INT      NOT NULL AUTO_INCREMENT,
-  id_turnieju  INT      NOT NULL,
-  kiedy        DATETIME NULL    ,
-  PRIMARY KEY (id_rozgrywka)
+  id_pracownika INT     NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  imię          VARCHAR(255) NOT NULL,
+  nazwisko      VARCHAR(255) NOT NULL,
+  wiek          INT     NOT NULL,
+  adres         VARCHAR(255) NULL    ,
+  telefon       INT         NULL,
+  rola          VARCHAR(255) NULL    ,
+  pensja        INT     NULL    
 );
 
-ALTER TABLE rozgrywka
-  ADD CONSTRAINT UQ_id_rozgrywka UNIQUE (id_rozgrywka);
+DROP TABLE rodzaj_turnieji;
 
-CREATE TABLE sale
+CREATE TABLE rodzaj_turnieji
 (
-  id_sale           INT      NOT NULL AUTO_INCREMENT,
-  id_spicherz_sklep INT      NOT NULL,
-  id_sprzedawcy     INT      NOT NULL,
-  id_klienta        INT      NOT NULL,
-  czas_kupna        DATETIME NULL    ,
-  PRIMARY KEY (id_sale)
+  id_rodzaj       INT NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_gry          INT NOT NULL,
+  średnia_punktów INT NULL    ,
+  ilość_gier      INT NULL    ,
+  max_graczy      INT NULL    ,
+  min_graczy      INT NULL    
 );
 
-ALTER TABLE sale
-  ADD CONSTRAINT UQ_id_sale UNIQUE (id_sale);
+DROP TABLE spichlerz_outlet;
 
-CREATE TABLE spichlerz
+CREATE TABLE spichlerz_outlet
 (
-  id_spichlerz    INT      NOT NULL AUTO_INCREMENT COMMENT 'finish him',
-  id_gry          INT      NOT NULL,
-  ilość           INT      NOT NULL,
-  kompletna       BOOLEAN  NOT NULL DEFAULT TRUE COMMENT 'nie wiem jak nzwac ',
-  turniejowa      BOOLEAN  NOT NULL DEFAULT TRUE,
-  cena_wynajmu    FLOAT    NULL    ,
-  ostatani_update DATETIME NULL    ,
-  PRIMARY KEY (id_spichlerz)
+  id_outlet            INT NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_spichlerz_wynajem INT NOT NULL ,
+  data_zwrotu          DATETIME    NULL  
 );
 
-ALTER TABLE spichlerz
-  ADD CONSTRAINT UQ_id_spichlerz UNIQUE (id_spichlerz);
+DROP TABLE spichlerz_sklep;
 
 CREATE TABLE spichlerz_sklep
 (
-  id_spicherz_sklep INT      NOT NULL AUTO_INCREMENT,
+  id_spichlerz_sklep INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
   id_gry            INT      NOT NULL,
-  ilość             INT      NULL    ,
-  cena              FLOAT    NULL    ,
-  ostatni_update   DATETIME NULL    ,
-  PRIMARY KEY (id_spicherz_sklep)
+  ostatni_update   DATETIME NULL    
 );
 
-ALTER TABLE spichlerz_sklep
-  ADD CONSTRAINT UQ_id_spicherz_sklep UNIQUE (id_spicherz_sklep);
+DROP TABLE spichlerz_wynajem;
 
-CREATE TABLE sprzedawcy
+CREATE TABLE spichlerz_wynajem
 (
-  id_sprzedawcy    INT     NOT NULL AUTO_INCREMENT,
-  imie             CHAR    NOT NULL,
-  nazwisko         CHAR    NOT NULL,
-  wiek             INT     NOT NULL,
-  adres            VARCHAR(255) NULL    ,
-  rok_zatrudnienie DATE    NOT NULL,
-  rok_odejścia     DATE    NULL    ,
-  PRIMARY KEY (id_sprzedawcy)
+  id_spichlerz_wynajem INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT COMMENT 'finish him',
+  id_gry               INT      NOT NULL,
+  ostatni_update      DATETIME NULL   
 );
 
-ALTER TABLE sprzedawcy
-  ADD CONSTRAINT UQ_id_sprzedawcy UNIQUE (id_sprzedawcy);
+DROP TABLE sklep;
+
+
+CREATE TABLE sklep
+(
+  id_transakcji     INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_spicherz_sklep INT      NOT NULL,
+  id_sprzedawcy     INT      NOT NULL,
+  id_klienta        INT      NOT NULL,
+  czas_kupna        DATETIME NULL   
+);
+
+DROP TABLE turnieje;
 
 CREATE TABLE turnieje
 (
-  id_turnieju INT     NOT NULL AUTO_INCREMENT,
-  id_gry      INT     NOT NULL,
-  reguły      VARCHAR(255) NULL    ,
-  PRIMARY KEY (id_turnieju)
+  id_turniej INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_rodzaj  INT      NOT NULL,
+  data       DATE NULL   
 );
 
-ALTER TABLE turnieje
-  ADD CONSTRAINT UQ_id_turnieju UNIQUE (id_turnieju);
+DROP TABLE wynajem;
 
 CREATE TABLE wynajem
 (
-  id_wynaje     INT     NOT NULL AUTO_INCREMENT,
-  id_spichlerz  INT     NOT NULL COMMENT 'finish him',
-  id_klienta    INT     NOT NULL,
-  id_sprzedawcy INT     NOT NULL,
-  od_kiedy      DATE    NULL    ,
-  do_kiedy      DATE    NULL    ,
-  usterki       BOOLEAN NULL     DEFAULT FALSE,
-  kwota         FLOAT   NULL    ,
-  PRIMARY KEY (id_wynaje)
+  id_transakcji_wynajem INT   NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_spichlerz_wynajem  INT   NOT NULL COMMENT 'finish him',
+  cena_wynajem          FLOAT NULL    ,
+  data_wynajmu          DATE  NULL    ,
+  data_zwrotu           DATE  NULL    ,
+  id_pracownika         INT   NOT NULL,
+  id_klienta            INT   NOT NULL,
+  zniszczona            FLOAT NULL  
 );
 
-ALTER TABLE wynajem
-  ADD CONSTRAINT UQ_id_wynaje UNIQUE (id_wynaje);
+DROP TABLE wyniki;
 
 CREATE TABLE wyniki
 (
-  id_rozgrywka INT   NOT NULL,
-  id_klienta   INT   NOT NULL,
-  wynik        FLOAT NULL    ,
-  start        TIME  NULL    ,
-  koniec       TIME  NULL    
+  id_turniej     INT NOT NULL,
+  id_klienta     INT NOT NULL,
+  wynik          INT NULL    ,
+  czas_rozgrywki INT NULL    
 );
-
-ALTER TABLE spichlerz
-  ADD CONSTRAINT FK_gra_TO_spichlerz
+--  relacje, nie dotykać
+ALTER TABLE spichlerz_wynajem
+  ADD CONSTRAINT FK_gra_TO_spichlerz_wynajem
     FOREIGN KEY (id_gry)
     REFERENCES gra (id_gry);
-
-ALTER TABLE wynajem
-  ADD CONSTRAINT FK_klienici_TO_wynajem
-    FOREIGN KEY (id_klienta)
-    REFERENCES klienici (id_klienta);
-
-ALTER TABLE wynajem
-  ADD CONSTRAINT FK_sprzedawcy_TO_wynajem
-    FOREIGN KEY (id_sprzedawcy)
-    REFERENCES sprzedawcy (id_sprzedawcy);
 
 ALTER TABLE spichlerz_sklep
   ADD CONSTRAINT FK_gra_TO_spichlerz_sklep
     FOREIGN KEY (id_gry)
     REFERENCES gra (id_gry);
 
-ALTER TABLE sale
-  ADD CONSTRAINT FK_klienici_TO_sale
+-- bład
+ALTER TABLE sklep
+  ADD CONSTRAINT FK_klienici_TO_sklep
     FOREIGN KEY (id_klienta)
-    REFERENCES klienici (id_klienta);
+    REFERENCES klienci (id_klienta);
 
-ALTER TABLE turnieje
-  ADD CONSTRAINT FK_gra_TO_turnieje
+ALTER TABLE rodzaj_turnieji
+  ADD CONSTRAINT FK_gra_TO_rodzaj_turnieji
     FOREIGN KEY (id_gry)
     REFERENCES gra (id_gry);
 
-ALTER TABLE rozgrywka
-  ADD CONSTRAINT FK_turnieje_TO_rozgrywka
-    FOREIGN KEY (id_turnieju)
-    REFERENCES turnieje (id_turnieju);
-
 ALTER TABLE wyniki
-  ADD CONSTRAINT FK_rozgrywka_TO_wyniki
-    FOREIGN KEY (id_rozgrywka)
-    REFERENCES rozgrywka (id_rozgrywka);
+  ADD CONSTRAINT FK_turnieje_TO_wyniki
+    FOREIGN KEY (id_turniej)
+    REFERENCES turnieje (id_turniej);
 
+-- błąd
 ALTER TABLE wyniki
   ADD CONSTRAINT FK_klienici_TO_wyniki
     FOREIGN KEY (id_klienta)
-    REFERENCES klienici (id_klienta);
+    REFERENCES klienci (id_klienta);
 
 ALTER TABLE outlet
   ADD CONSTRAINT FK_klienici_TO_outlet
     FOREIGN KEY (id_klienta)
-    REFERENCES klienici (id_klienta);
+    REFERENCES klienci (id_klienta);
 
-ALTER TABLE sale
-  ADD CONSTRAINT FK_sprzedawcy_TO_sale
+ALTER TABLE sklep
+  ADD CONSTRAINT FK_pracownicy_TO_sklep
     FOREIGN KEY (id_sprzedawcy)
-    REFERENCES sprzedawcy (id_sprzedawcy);
+    REFERENCES pracownicy (id_pracownika);
 
-ALTER TABLE sale
-  ADD CONSTRAINT FK_spichlerz_sklep_TO_sale
+ALTER TABLE sklep
+  ADD CONSTRAINT FK_spichlerz_sklep_TO_sklep
     FOREIGN KEY (id_spicherz_sklep)
     REFERENCES spichlerz_sklep (id_spicherz_sklep);
 
 ALTER TABLE outlet
-  ADD CONSTRAINT FK_sprzedawcy_TO_outlet
-    FOREIGN KEY (id_sprzedawcy)
-    REFERENCES sprzedawcy (id_sprzedawcy);
-
-ALTER TABLE outlet
-  ADD CONSTRAINT FK_spichlerz_TO_outlet
-    FOREIGN KEY (id_spichlerz)
-    REFERENCES spichlerz (id_spichlerz);
+  ADD CONSTRAINT FK_pracownicy_TO_outlet
+    FOREIGN KEY (id_pracownika)
+    REFERENCES pracownicy (id_pracownika);
 
 ALTER TABLE wynajem
-  ADD CONSTRAINT FK_spichlerz_TO_wynajem
-    FOREIGN KEY (id_spichlerz)
-    REFERENCES spichlerz (id_spichlerz);
+  ADD CONSTRAINT FK_spichlerz_wynajem_TO_wynajem
+    FOREIGN KEY (id_spichlerz_wynajem)
+    REFERENCES spichlerz_wynajem (id_spichlerz_wynajem);
+
+ALTER TABLE wynajem
+  ADD CONSTRAINT FK_pracownicy_TO_wynajem
+    FOREIGN KEY (id_pracownika)
+    REFERENCES pracownicy (id_pracownika);
+
+ALTER TABLE wynajem
+  ADD CONSTRAINT FK_klienici_TO_wynajem
+    FOREIGN KEY (id_klienta)
+    REFERENCES klienci (id_klienta);
+
+ALTER TABLE spichlerz_outlet
+  ADD CONSTRAINT FK_spichlerz_wynajem_TO_spichlerz_outlet
+    FOREIGN KEY (id_spichlerz_wynajem)
+    REFERENCES spichlerz_wynajem (id_spichlerz_wynajem);
+
+ALTER TABLE outlet
+  ADD CONSTRAINT FK_wynajem_TO_outlet
+    FOREIGN KEY (id_transakcji_wynajem)
+    REFERENCES wynajem (id_transakcji_wynajem);
+
+ALTER TABLE turnieje
+  ADD CONSTRAINT FK_rodzaj_turnieji_TO_turnieje
+    FOREIGN KEY (id_rozdaj)
+    REFERENCES rodzaj_turnieji (id_rodzaj);
 
         
       
