@@ -102,7 +102,7 @@ CREATE TABLE sklep
 (
   id_transakcji     INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
   id_spicherz_sklep INT      NOT NULL,
-  id_sprzedawcy     INT      NOT NULL,
+  id_pracownika     INT      NOT NULL,
   id_klienta        INT      NOT NULL,
   czas_kupna        DATETIME NULL   
 );
@@ -123,8 +123,8 @@ CREATE TABLE wynajem
   id_transakcji_wynajem INT   NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
   id_spichlerz_wynajem  INT   NOT NULL COMMENT 'finish him',
   cena_wynajem          FLOAT NULL    ,
-  data_wynajmu          DATE  NULL    ,
-  data_zwrotu           DATE  NULL    ,
+  data_wynajmu          DATETIME  NULL    ,
+  data_zwrotu           DATETIME  NULL    ,
   id_pracownika         INT   NOT NULL,
   id_klienta            INT   NOT NULL,
   zniszczona            FLOAT NULL  
