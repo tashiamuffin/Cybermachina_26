@@ -35,6 +35,7 @@ DROP TABLE outlet;
 CREATE TABLE outlet
 (
   id_transakcji_outlet  INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_transakcji_wynajem INT      NOT NULL,
   id_spichlerz_wynajem INT      NOT NULL,
   cena_outlet           FLOAT    NULL    ,
   wizyta                DATETIME NULL    ,
@@ -47,18 +48,18 @@ DROP TABLE pracownicy;
 CREATE TABLE pracownicy
 (
   id_pracownika INT     NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
-  imię          VARCHAR(255) NOT NULL,
-  nazwisko      VARCHAR(255) NOT NULL,
-  wiek          INT     NOT NULL,
-  adres         VARCHAR(255) NULL    ,
-  telefon       INT         NULL,
+  imię_pracownika          VARCHAR(255) NOT NULL,
+  nazwisko_pracownika     VARCHAR(255) NOT NULL,
+  wiek_pracownika          INT     NOT NULL,
+  adres_pracownika         VARCHAR(255) NULL    ,
+  telefon_pracownika       INT         NULL,
   rola          VARCHAR(255) NULL    ,
   pensja        INT     NULL    
 );
 
-DROP TABLE rodzaj_turnieji;
+DROP TABLE rodzaj_turniejów;
 
-CREATE TABLE rodzaj_turnieji
+CREATE TABLE rodzaj_turniejów
 (
   id_rodzaj       INT NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
   id_gry          INT NOT NULL,
@@ -72,9 +73,8 @@ DROP TABLE spichlerz_outlet;
 
 CREATE TABLE spichlerz_outlet
 (
-  id_outlet            INT NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
-  id_spichlerz_wynajem INT NOT NULL ,
-  data_zwrotu          DATETIME    NULL  
+  id_spichlerz_outlet            INT NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_transakcji_wynajem INT NOT NULL
 );
 
 DROP TABLE spichlerz_sklep;
