@@ -38,10 +38,11 @@ CREATE TABLE outlet
   id_transakcji_wynajem INT      NOT NULL,
   id_spichlerz_wynajem INT      NOT NULL,
   cena_outlet           FLOAT    NULL    ,
-  wizyta                DATETIME NULL    ,
+  data_zakupu               DATETIME NULL    ,
   id_klienta            INT      NOT NULL,
   id_pracownika         INT      NOT NULL
 );
+
 
 DROP TABLE pracownicy;
 
@@ -100,11 +101,12 @@ DROP TABLE sklep;
 
 CREATE TABLE sklep
 (
-  id_transakcji     INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
-  id_spicherz_sklep INT      NOT NULL,
-  id_pracownika     INT      NOT NULL,
-  id_klienta        INT      NOT NULL,
-  czas_kupna        DATETIME NULL   
+  id_transakcji_sklep     INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
+  id_spichlerz_sklep INT      NOT NULL,
+  data_zakupu        DATETIME NULL,
+  cena_kupno          FLOAT NULL    ,
+  id_klienta        INT      NOT NULL ,
+	id_pracownika     INT      NOT NULL 
 );
 
 DROP TABLE turnieje;
