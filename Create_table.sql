@@ -102,7 +102,7 @@ CREATE TABLE sklep
 (
   id_transakcji     INT      NOT NULL PRIMARY KEY  UNIQUE AUTO_INCREMENT,
   id_spicherz_sklep INT      NOT NULL,
-  id_sprzedawcy     INT      NOT NULL,
+  id_pracownika     INT      NOT NULL,
   id_klienta        INT      NOT NULL,
   czas_kupna        DATETIME NULL   
 );
