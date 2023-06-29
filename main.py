@@ -500,7 +500,7 @@ def turniej(gracze, stoly, gry, inv, rental):
     kind_tournament = random.choices(np.array(id_spis),k=len(all_date_tournament)) # losowanie typu turnieju
     date_date = [dt.date() for dt in all_date_tournament] # tylko daty
     rozgrywka = pd.DataFrame({'id_turnieju':id_turniej, 'id_rodzaj':kind_tournament,'data':date_date})
-# wyniki
+    # wyniki
 
     id_turnieji = np.array([])
     id_klientow = np.array([])
@@ -553,7 +553,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                     id_rozgrywki_s = np.round(np.array([id_turniej[_]]*(max_g)),0) # powtarzamy id_turnieju 
                     id_turnieji = np.append(id_turnieji,id_rozgrywki_s)
 
-                    id_klienta = random.sample(list(gracze['id_klienta']),k = max_g) # losujemy graczy bez zwracania
+                    id_klienta = random.sample(list(gracze[gracze["wiek"] > 15]['id_klienta']),k = max_g) # losujemy graczy bez zwracania
                     id_klientow = np.append(id_klientow,id_klienta)
 
                     wynik = [spis_turniej[spis_turniej['id_spis']==kt]['średnia_punktów'].iloc[0]]*max_g + np.random.normal(
@@ -574,7 +574,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                     id_rozgrywki_s = np.round(np.array([id_turniej[_]]*(il-max_g*(_n))),0) # powtarzamy id_turnieju 
                     id_turnieji = np.append(id_turnieji,id_rozgrywki_s)
 
-                    id_klienta = random.sample(list(gracze['id_klienta']),k = (il-max_g*(_n))) # losujemy graczy bez zwracania
+                    id_klienta = random.sample(list(gracze[gracze["wiek"] > 15]['id_klienta']),k = (il-max_g*(_n))) # losujemy graczy bez zwracania
                     id_klientow = np.append(id_klientow,id_klienta)
 
                     wynik = [spis_turniej[spis_turniej['id_spis']==kt]['średnia_punktów'].iloc[0]]*(il-max_g*(_n)) + np.random.normal(
@@ -595,7 +595,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                     id_rozgrywki_s = np.round(np.array([id_turniej[_]]*(max_g)),0) # powtarzamy id_turnieju 
                     id_turnieji = np.append(id_turnieji,id_rozgrywki_s)
                     
-                    id_klienta = random.sample(list(gracze['id_klienta']),k = max_g) # losujemy graczy bez zwracania
+                    id_klienta = random.sample(list(gracze[gracze["wiek"] > 15]['id_klienta']),k = max_g) # losujemy graczy bez zwracania
                     id_klientow = np.append(id_klientow,id_klienta)
 
                     wynik = [spis_turniej[spis_turniej['id_spis']==kt]['średnia_punktów'].iloc[0]]*max_g + np.random.normal(
@@ -610,7 +610,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                     id_rozgrywki_s = np.round(np.array([id_turniej[_]]*(il-max_g*(_n))),0) # powtarzamy id_turnieju 
                     id_turnieji = np.append(id_turnieji,id_rozgrywki_s)
                     
-                    id_klienta = random.sample(list(gracze['id_klienta']),k = (il-max_g*(_n))) # losujemy graczy bez zwracania
+                    id_klienta = random.sample(list(gracze[gracze["wiek"] > 15]['id_klienta']),k = (il-max_g*(_n))) # losujemy graczy bez zwracania
                     id_klientow = np.append(id_klientow,id_klienta)
 
                     wynik = [spis_turniej[spis_turniej['id_spis']==kt]['średnia_punktów'].iloc[0]]*(il-max_g*(_n)) + np.random.normal(
@@ -621,8 +621,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                            scale= gra_tournament[gra_tournament['id_gry']==idgry]['czas_gry'].iloc[0])*0.1]*(il-max_g*_n),0)
                     czas_rozrywki = np.append(czas_rozrywki,czas)
 
-    id_wyniki = [mim for mim in range(1,len(wyniki)+1)]
-    df_wynik = pd.DataFrame({'id_wynik':id_wyniki,'id_turniej':id_turnieji.astype(int),'id_klienta':id_klientow.astype(int),'wynik':np.ceil(wyniki).astype(int),'czas_rozgrywki':czas_rozrywki.astype(int)})    
+    df_wynik = pd.DataFrame({'id_turniej':id_turnieji.astype(int),'id_klienta':id_klientow.astype(int),'wynik':np.ceil(wyniki).astype(int),'czas_rozgrywki':czas_rozrywki.astype(int)})    
     spis_turniej = spis_turniej.rename(columns={'id_spis':'id_rodzaj','id_gry':'id_gry','średnia_punktów' :'średnia_punktów' ,
                             'ilosc_gier' : 'ilość_gier', 'min_graczy':'min_graczy', 'max_graczy':'max_graczy'})
     rozgrywka = rozgrywka.rename(columns={'id_turnieju':'id_turniej', 'id_rodzaj':'id_rodzaj','data':'data'})
