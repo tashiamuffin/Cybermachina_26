@@ -11,22 +11,22 @@ from sqlalchemy import text
 t = 10000 ##żeby wykluczyć mało znane imiona i nazwiska
 
 ##imiona męskie i kobiece
-im = pd.read_csv("IM.csv")
+im = pd.read_csv("csv\IM.csv")
 im = im[im["LICZBA WYSTĄPIEŃ"] > t] 
-ik = pd.read_csv("IK.csv")
+ik = pd.read_csv("csv/IK.csv")
 ik = ik[ik["LICZBA_WYSTĄPIEŃ"] > t]
 ik = ik["IMIĘ_PIERWSZE"]
 im = im["IMIĘ PIERWSZE"]
 
 ##nazwiska męskie i kobiece
-nm = pd.read_csv("NM.csv")
+nm = pd.read_csv("csv/NM.csv")
 nm = nm[nm["Liczba"] > t]
 nk = pd.read_csv("NK.csv")
 nk = nk[nk["Liczba"] > t]
 nk = nk["Nazwisko aktualne"]
 nm = nm["Nazwisko aktualne"]
 
-ulice = pd.read_csv("ULIC.csv", sep=";")
+ulice = pd.read_csv("csv/ULIC.csv", sep=";")
 ulice_jaworze = ulice.query('WOJ == 24 & POW == 2 & GMI == 6 & RODZ_GMI == 2') ##bo kod terytorialny jaworza to 24.2.6.2
 ulice_jaworze = np.array(ulice_jaworze["NAZWA_1"]) ##i bierzemy ulice
 
@@ -196,10 +196,10 @@ def odwiedziny(start = datetime.datetime(2022, 6, 6, 9, 0, 0), lamb = 4):
                 ##ilość dostępnych gier w outlecie musi wynosić min tyle ile ktoś chce tych gier zakupić
                 
                 if len(outlet[outlet["return_date"] < start]) >= ilosc[0]: 
-                    rodzaj = random.choices(["wynajem", "kupno", "outlet"], weights = [10, 10, 2], k = 1)
+                    rodzaj = random.choices(["wynajem", "kupno", "outlet"], weights = [24, 6, 2], k = 1)
                     ##ustalamy prawdopodobieństwa skorzystania z outletu na 2:10:10 względem zwykłego kupna i wynajmu
                 else:
-                    rodzaj = random.choices(["wynajem", "kupno"], k = 1)
+                    rodzaj = random.choices(["wynajem", "kupno"],weights = [4, 1], k = 1)
                     #jeśli outlet jest za słabo wyposażony zostaje tylko opcja wynajmu / kupna z wagami 1:1
                 
                 if rodzaj == ["wynajem"]:
@@ -437,12 +437,31 @@ def sales(ul = ulice_jaworze):
 
 
 def turniej(gracze, stoly, gry, inv, rental):
+    '''
+    Funkcja, która symuluje przebieg turniejów odbywających się planowo co 2 tygodnie w naszym sklepie, a następnie 
+    zwraca 3 tabele (df.dataframe) zawierające kolejno:
+    
+    - spis_turniej: Informacje na temat logistyki przeprowadzania turniejów ze względu na daną grę, tj. ilość punktów
+                    możliwych do zdobycia, liczba rozgrywek, minimalna i maksymalna liczba graczy.
+    - rozgrywka: Informacje o datach kolejnych turniejów oraz grze, w której rywalizowali uczestnicy.
+    - wyniki: Informacje o wynikach poszczególnych graczy, tj. id_gracza, liczba zdobytych punktów, długość rozgrywki.
+    
+    Argumenty wejściowe:
+    
+    - gracze [pd.dataframe]: populacja, z której losowani będą uczestnicy poszczególnych rozgrywek
+    - stoly [int]: liczba stołów, na których będą rozgrywane turnieje
+    - gry [pd.dataframe]: tabela z grami, w które będzie można zorganizować turnieje
+    '''
+    
+    # turnieje startują od 09.06.2022 i odbywają się do dzisiaj
     start = datetime.datetime(2022, 6, 9, 18, 0, 0)
     now = datetime.datetime.now()
-    days = (now - start).days ##żeby te daty były do dzisiaj
-
+    days = (now - start).days
     two_weeks = datetime.timedelta(weeks = 2)
     future = now + two_weeks*6
+    
+    # ================ resztę na dole też ładnie uporządkuję ale to na końcu
+    
     # generowanie dat turniejów
     all_date_tournament = np.array([start])
     while all_date_tournament[-1]<future:
@@ -466,8 +485,8 @@ def turniej(gracze, stoly, gry, inv, rental):
     # spis_turnieju
     gra_tournament = gry[gry['turniejowe'] == 1]
     id_spis = [i for i in range(1,len(gra_tournament)+1)]
-    # zakładam, iz czsas dodatkowy to 0.3
-    # sprawdzić czy na stanie jest wytarczająca ilość gier
+    # zakładam, iz czas dodatkowy to 0.3
+    # sprawdzić czy na stanie jest wystarczająca ilość gier
     amount = np.floor(240/(np.array(gra_tournament[['czas_gry']])+np.array(gra_tournament[['czas_gry']])*0.3))*stoly
     amount = amount.transpose()
     # graczy
@@ -475,7 +494,7 @@ def turniej(gracze, stoly, gry, inv, rental):
     max_graczy = np.array(gra_tournament['max_graczy'])*amount.astype(int)
 
     # średnia z punktów dla poszczególnych gier
-    mean_point = np.array([110,50,350])
+    mean_point = np.array([110, 50, 150, 69, 62])
     # tworzenie dataframe
     spis_turniej = pd.DataFrame({'id_spis':id_spis,'id_gry':gra_tournament['id_gry'],'średnia_punktów' : mean_point,
                             'ilosc_gier' : amount[0], 'min_graczy': min_graczy[0], 'max_graczy':max_graczy[0]})
@@ -506,14 +525,9 @@ def turniej(gracze, stoly, gry, inv, rental):
             raise ValueError('No to chop na gałąź')
 
         ig = np.array(spis_turniej[spis_turniej['id_spis']==kt][['min_graczy','max_graczy']].iloc[0]) # wczytywanie min max graczy
-        
-        #il = np.array(gry[gry['ID']==ig][['MIN_GRACZY','MAX_GRACZY']])
-        #il_max = il[0][1]
 
         # ilość graczy na turnieju
         il = random.randint(ig[0],ig[1])
-        #n = sum([random.randint(il[0][0],il[0][1]) for i in range(int(turniej[turniej['id_turnieju']==kt][['ilosc_gier']].iloc[0]))])
-        #n = int(turniej[turniej['id_turnieju']==kt]['ilosc_gier'].iloc[0]/2)
 
         # znajdowanie max graczy w grze(planszy)
         max_g = np.array(gra_tournament[gra_tournament['id_gry']==idgry]['max_graczy'])[0]
@@ -533,9 +547,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                 
                 czas = np.round([gra_tournament[gra_tournament['id_gry']==idgry]['czas_gry'].iloc[0] + np.random.normal(
                            scale= gra_tournament[gra_tournament['id_gry']==idgry]['czas_gry'].iloc[0])*0.1]*max_g,0)
-                #czas_2 = np.round([gra_tournament[gra_tournament['ID']==ig]['CZAS_GRY'].iloc[0] + np.random.normal(scale=10)]*il_max,0)
 
-                #czas = np.append(czas_1,czas_2)
                 czas_rozrywki = np.append(czas_rozrywki,czas)
         elif il%max_g == 1 or il%max_g == 2:
             vec = range(np.ceil(il/max_g).astype(int))
@@ -612,15 +624,11 @@ def turniej(gracze, stoly, gry, inv, rental):
                            scale= gra_tournament[gra_tournament['id_gry']==idgry]['czas_gry'].iloc[0])*0.1]*(il-max_g*_n),0)
                     czas_rozrywki = np.append(czas_rozrywki,czas)
 
-
-    print(len(id_turnieji),len(id_klientow),len(wyniki))
     df_wynik = pd.DataFrame({'id_turniej':id_turnieji.astype(int),'id_klienta':id_klientow.astype(int),'wynik':np.ceil(wyniki).astype(int),'czas_rozgrywki':czas_rozrywki.astype(int)})    
     spis_turniej = spis_turniej.rename(columns={'id_spis':'id_rodzaj','id_gry':'id_gry','średnia_punktów' :'średnia_punktów' ,
                             'ilosc_gier' : 'ilość_gier', 'min_graczy':'min_graczy', 'max_graczy':'max_graczy'})
     rozgrywka = rozgrywka.rename(columns={'id_turnieju':'id_turniej', 'id_rodzaj':'id_rodzaj','data':'data'})
     return spis_turniej, rozgrywka, df_wynik  
-
-
 
 if __name__ == "__main__":
     print("wait for it")
@@ -635,7 +643,11 @@ if __name__ == "__main__":
     outlet = tab[5]
     spichlerz_outlet = tab[6]
     pracownicy = sales()
-    n, m,p = turniej(klienci, 2, gry, spichlerz_wynajem, wynajem)
+    n, m, p = turniej(klienci, 2, gry, spichlerz_wynajem, wynajem)
+    ##n - rodzaj_turniejów
+    ##m - turniej
+    ##p - wyniki
+
     print("almost done")
     
     ##wrzucenie tabel do bazy
@@ -648,7 +660,7 @@ if __name__ == "__main__":
     )
     engine = create_engine(url_object)
     conn = engine.connect()
-    conn.execute(text('TRUNCATE TABLE gra'))
+    conn.execute(text('TRUNCATE TABLE gry'))
     conn.execute(text('TRUNCATE TABLE pracownicy'))
     conn.execute(text('TRUNCATE TABLE klienci'))
     conn.execute(text('TRUNCATE TABLE outlet'))
@@ -657,8 +669,11 @@ if __name__ == "__main__":
     conn.execute(text('TRUNCATE TABLE sklep'))
     conn.execute(text('TRUNCATE TABLE spichlerz_sklep'))
     conn.execute(text('TRUNCATE TABLE spichlerz_outlet'))
+    conn.execute(text('TRUNCATE TABLE rodzaje_turniejów'))
+    conn.execute(text('TRUNCATE TABLE turnieje'))
+    conn.execute(text('TRUNCATE TABLE wyniki'))
 
-    gry.to_sql("gra", engine, if_exists="append", index = False)
+    gry.to_sql("gry", engine, if_exists="append", index = False)
     pracownicy.to_sql("pracownicy", engine, if_exists="append", index = False)
     klienci.to_sql("klienci", engine, if_exists="append", index=False)
     outlet.to_sql("outlet", engine, if_exists="append", index=False)
@@ -667,7 +682,9 @@ if __name__ == "__main__":
     sklep.to_sql("sklep", engine, if_exists="append", index=False)
     spichlerz_sklep.to_sql("spichlerz_sklep", engine, if_exists="append", index=False)
     spichlerz_outlet.to_sql("spichlerz_outlet", engine, if_exists="append", index=False)
-    #rozgrywka.to_sql("turnieje", engine, if_exists="replace", index = False)
+    n.to_sql("rodzaje_turniejów", engine, if_exists="append", index=False)
+    m.to_sql("turnieje", engine, if_exists="append", index=False)
+    p.to_sql("wyniki", engine, if_exists="append", index=False)
     conn.close()
     print("hura")
 
