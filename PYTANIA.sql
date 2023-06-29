@@ -28,15 +28,15 @@ GROUP BY id_pracownika, MONTH(data_wynajmu)
 
 UNION ALL
 
-SELECT id_pracownika, MONTH(wizyta) AS miesiąc, SUM(cena_kupno) AS "przychód", "KUPNO"
+SELECT id_pracownika, MONTH(data_zakupu) AS miesiąc, SUM(cena_kupno) AS "przychód", "KUPNO"
 FROM sklep
-GROUP BY id_pracownika, MONTH(wizyta)
+GROUP BY id_pracownika, MONTH(data_zakupu)
 
 UNION ALL
 
-SELECT id_pracownika, MONTH(wizyta) AS miesiąc, SUM(cena_outlet) AS "przychód", "OUTLET"
+SELECT id_pracownika, MONTH(data_zakupu) AS miesiąc, SUM(cena_outlet) AS "przychód", "OUTLET"
 FROM outlet
-GROUP BY id_pracownika, MONTH(wizyta)
+GROUP BY id_pracownika, MONTH(data_zakupu)
 )
 
 SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, SUM(przychód) AS "przychody"
@@ -44,6 +44,10 @@ FROM sss
 JOIN pracownicy USING(id_pracownika)
 GROUP BY id_pracownika, miesiąc
 ORDER BY miesiąc, SUM(przychód) DESC;
+
+-- 2. te turnieje coś tam (work in progress)
+
+-- cisowianka
 
 -- 3. Ustal, które gry przynoszą największy dochód ze sprzedaży, a które z wypożyczeń. --------------
 -- just suma po tytule gry
@@ -59,7 +63,7 @@ SELECT id_gry, tytuł, COUNT(id_transakcji_wynajem) AS "ile_gier_wynajem", SUM(c
 			ROUND(SUM(cena_wynajem)/ile_gier/cena_wynajem, 2) AS "znormalizowany średni dochód"
 FROM wynajem
 LEFT JOIN spichlerz_wynajem USING(id_spichlerz_wynajem)
-JOIN gry USING(id_gry)
+JOIN gra USING(id_gry)
 JOIN ilość USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_wynajem)/ile_gier/cena_wynajem DESC;
@@ -81,15 +85,15 @@ SELECT id_gry, tytuł,  COUNT(id_transakcji_sklep) AS "ile_gier_zakup", ile_gier
 			ROUND(SUM(cena_kupno)/ile_gier_inv/cena_kupno, 2) AS "znormalizowany średni dochód"
 FROM sklep
 LEFT JOIN spichlerz_sklep USING(id_spichlerz_sklep)
-JOIN gry USING(id_gry)
+JOIN gra USING(id_gry)
 JOIN ilość USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_kupno)/ile_gier_inv/cena_kupno DESC;
 
--- dla outletu zwykła suma?
+-- dla outletu zwykła suma? (a tutaj to trzeba ogarnąć jeszcze)
 SELECT id_gry, tytuł, SUM(cena_outlet), COUNT(id_transakcji_outlet)
 FROM outlet
-JOIN gry USING(id_gry)
+JOIN gra USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_outlet) DESC;
 
@@ -142,7 +146,7 @@ LEFT JOIN klienci USING(id_klienta)
 WHERE id_klienta = 2360
 GROUP BY id_klienta;
 
--- ogólna funkcja 
+-- ogólna funkcja (czyli w sumie tylko to nas interesuje)
 WITH aaa AS (
 SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_outlet) AS "suma_trans", COUNT(id_transakcji_outlet) AS "ilość_trans", "OUTLET"
 FROM outlet
@@ -170,8 +174,71 @@ GROUP BY id_klienta
 ORDER BY łącznie DESC
 LIMIT 20;
 
+-- Mieszkańcy której ulicy najczęściej wypożyczali, a której najczęściej kupowali nasze gry?
+-- tu będzie jeszcze kombinowanie z tymi ulicami żeby mogło być w 1 kolumnie
 
--- dzień, w którym było najwięcej osób / dzień z największym dochodem / jaki dzień tygodnia jest najbardziej oblegany
+SELECT ulica, COUNT(*) as zakupione_gry, SUM(cena_kupno) wydane_$
+FROM sklep 
+INNER JOIN klienci 
+USING(id_klienta)
+WHERE ulica NOT LIKE "NULL"
+GROUP BY ulica
+ORDER BY zakupione_gry DESC;
+
+SELECT ulica, COUNT(*) as wypożyczone_gry, SUM(cena_wynajem) wydane_$
+FROM wynajem 
+INNER JOIN klienci 
+USING(id_klienta)
+WHERE ulica NOT LIKE "NULL"
+GROUP BY ulica
+ORDER BY wydane_$ DESC;
+
+-- TOP 3 DNI Z NAJCZĘSTSZYMI ODWIEDZIAMI (kupno+wynajem+outlet)
+
+WITH ulsko AS (
+SELECT COUNT(*) as ilość, DATE(wizyta) as dzień, SUM(cena_kupno) as przychód
+FROM sklep
+GROUP BY dzień
+
+UNION ALL
+
+SELECT COUNT(*) as ilość, DATE(data_wynajmu) as dzień, SUM(cena_wynajem) as przychód
+FROM wynajem
+GROUP BY dzień
+
+UNION ALL
+
+SELECT COUNT(*) as ilość, DATE(wizyta) as dzień, SUM(cena_outlet) as przychód
+FROM outlet
+GROUP BY dzień
+)
+
+SELECT dzień, SUM(ilość) as "ilość wizyt", SUM(przychód) as przychód
+FROM ulsko
+GROUP BY dzień
+ORDER BY SUM(ilość) DESC
+LIMIT 3;
+
+-- Podział na dni tygodnia ??? (gówno jakieś to na razie jest)
+
+WITH ulsko AS (
+SELECT COUNT(wizyta), DATE(wizyta) as den, WEEKDAY(wizyta) as den_tygodnia
+FROM sklep
+GROUP BY den;
+
+UNION ALL
+
+SELECT COUNT(DISTINCT id_klienta), WEEKDAY(data_wynajmu) as den
+FROM wynajem
+GROUP BY den;
+
+UNION ALL
+
+SELECT COUNT(wizyta), DATE(wizyta) as den
+FROM outlet
+GROUP BY den
+
+-- TU BĘDZIE JESZCZE 1 PYTANIE (albo więcej bo czemu nie)
 -- najczęściej wypożyczana gra (tytuł)/ egzemplarz gry, najczęściej niszczona gra/egzemplarz
 -- coś z outletem - najczęściej pojawiająca się tam gra czyli w sumie najczęściej niszczona) - może jaki rodzaj gry
 -- które serie gier zarabiają dla nas najwięcej (średnio)/ są najczęściej wypożyczane
