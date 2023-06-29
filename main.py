@@ -11,22 +11,22 @@ from sqlalchemy import text
 t = 10000 ##żeby wykluczyć mało znane imiona i nazwiska
 
 ##imiona męskie i kobiece
-im = pd.read_csv("csv\IM.csv")
+im = pd.read_csv("IM.csv")
 im = im[im["LICZBA WYSTĄPIEŃ"] > t] 
-ik = pd.read_csv("csv/IK.csv")
+ik = pd.read_csv("IK.csv")
 ik = ik[ik["LICZBA_WYSTĄPIEŃ"] > t]
 ik = ik["IMIĘ_PIERWSZE"]
 im = im["IMIĘ PIERWSZE"]
 
 ##nazwiska męskie i kobiece
-nm = pd.read_csv("csv/NM.csv")
+nm = pd.read_csv("NM.csv")
 nm = nm[nm["Liczba"] > t]
 nk = pd.read_csv("NK.csv")
 nk = nk[nk["Liczba"] > t]
 nk = nk["Nazwisko aktualne"]
 nm = nm["Nazwisko aktualne"]
 
-ulice = pd.read_csv("csv/ULIC.csv", sep=";")
+ulice = pd.read_csv("ULIC.csv", sep=";")
 ulice_jaworze = ulice.query('WOJ == 24 & POW == 2 & GMI == 6 & RODZ_GMI == 2') ##bo kod terytorialny jaworza to 24.2.6.2
 ulice_jaworze = np.array(ulice_jaworze["NAZWA_1"]) ##i bierzemy ulice
 
@@ -167,7 +167,7 @@ def odwiedziny(start = datetime.datetime(2022, 6, 6, 9, 0, 0), lamb = 4):
     
     for d in range(1, days + 1):
         
-        if d%6 == 0 or d%7 == 0 or (d in dd): ## wyłączenie weekendów oraz świąt
+        if datetime.datetime.weekday(start)== 5 or datetime.datetime.weekday(start) == 6 or (d in dd): ## wyłączenie weekendów oraz świąt
             pass
         
         else:
@@ -621,11 +621,25 @@ def turniej(gracze, stoly, gry, inv, rental):
                            scale= gra_tournament[gra_tournament['id_gry']==idgry]['czas_gry'].iloc[0])*0.1]*(il-max_g*_n),0)
                     czas_rozrywki = np.append(czas_rozrywki,czas)
 
-    df_wynik = pd.DataFrame({'id_turniej':id_turnieji.astype(int),'id_klienta':id_klientow.astype(int),'wynik':np.ceil(wyniki).astype(int),'czas_rozgrywki':czas_rozrywki.astype(int)})    
+    id_wyniki = [mim for mim in range(1,len(wyniki)+1)]
+    df_wynik = pd.DataFrame({'id_wynik':id_wyniki,'id_turniej':id_turnieji.astype(int),'id_klienta':id_klientow.astype(int),'wynik':np.ceil(wyniki).astype(int),'czas_rozgrywki':czas_rozrywki.astype(int)})    
     spis_turniej = spis_turniej.rename(columns={'id_spis':'id_rodzaj','id_gry':'id_gry','średnia_punktów' :'średnia_punktów' ,
                             'ilosc_gier' : 'ilość_gier', 'min_graczy':'min_graczy', 'max_graczy':'max_graczy'})
     rozgrywka = rozgrywka.rename(columns={'id_turnieju':'id_turniej', 'id_rodzaj':'id_rodzaj','data':'data'})
     return spis_turniej, rozgrywka, df_wynik  
+
+def drop_foreign_key(engine,table, key):
+
+    connection = engine.connect()
+    drop_constraint_statement = "ALTER TABLE " + table + ' DROP CONSTRAINT ' +key +" ; "
+    connection.execute(text(drop_constraint_statement))
+    connection.close()
+
+def add_foreign_key(engine,table, fk, key, end):
+    connection = engine.connect()
+    add_constraint_statement = "ALTER TABLE "+ table + " ADD CONSTRAINT "+fk+" FOREIGN KEY ("+ key +") REFERENCES "+end+ " ;"
+    connection.execute(text(add_constraint_statement))
+    connection.close()
 
 if __name__ == "__main__":
     print("wait for it")
@@ -657,6 +671,24 @@ if __name__ == "__main__":
     )
     engine = create_engine(url_object)
     conn = engine.connect()
+
+    drop_foreign_key(engine,'rodzaje_turniejów','FK_id_gry')
+    drop_foreign_key(engine,'spichlerz_outlet','FK_id_transakcji_wynajem')
+    drop_foreign_key(engine,'spichlerz_sklep','FK_id_gry2')
+    drop_foreign_key(engine,'spichlerz_wynajem','FK_id_gry1')
+    drop_foreign_key(engine,'sklep','FK_id_spichlerz_sklep')
+    drop_foreign_key(engine,'sklep','FK_id_pracownika1')
+    drop_foreign_key(engine,'sklep','FK_id_klienta1')
+    drop_foreign_key(engine,'turnieje','FK_id_rodzaj')
+    drop_foreign_key(engine,'wynajem','FK_id_spichlerz_wynajem')
+    drop_foreign_key(engine,'wynajem','FK_id_pracownika2')
+    drop_foreign_key(engine,'wynajem','FK_id_klienta2')
+    drop_foreign_key(engine,'wyniki','FK_id_turniej')
+    drop_foreign_key(engine,'wyniki','FK_id_klienta3')
+    drop_foreign_key(engine,'outlet','FK_id_klienta')
+    drop_foreign_key(engine,'outlet','FK_id_pracownika')
+
+    conn.execute(text('TRUNCATE TABLE rodzaje_turniejów'))
     conn.execute(text('TRUNCATE TABLE gry'))
     conn.execute(text('TRUNCATE TABLE pracownicy'))
     conn.execute(text('TRUNCATE TABLE klienci'))
@@ -666,9 +698,8 @@ if __name__ == "__main__":
     conn.execute(text('TRUNCATE TABLE sklep'))
     conn.execute(text('TRUNCATE TABLE spichlerz_sklep'))
     conn.execute(text('TRUNCATE TABLE spichlerz_outlet'))
-    conn.execute(text('TRUNCATE TABLE rodzaje_turniejów'))
-    conn.execute(text('TRUNCATE TABLE turnieje'))
     conn.execute(text('TRUNCATE TABLE wyniki'))
+    conn.execute(text('TRUNCATE TABLE turnieje'))
 
     gry.to_sql("gry", engine, if_exists="append", index = False)
     pracownicy.to_sql("pracownicy", engine, if_exists="append", index = False)
@@ -682,6 +713,25 @@ if __name__ == "__main__":
     n.to_sql("rodzaje_turniejów", engine, if_exists="append", index=False)
     m.to_sql("turnieje", engine, if_exists="append", index=False)
     p.to_sql("wyniki", engine, if_exists="append", index=False)
+
+    add_foreign_key(engine,'outlet','FK_id_klienta','id_klienta','klienci(id_klienta)')
+    add_foreign_key(engine,'outlet','FK_id_pracownika','id_pracownika','pracownicy(id_pracownika)')
+    add_foreign_key(engine,'rodzaje_turniejów','FK_id_gry','id_gry','gry(id_gry)')
+    add_foreign_key(engine,'spichlerz_outlet','FK_id_transakcji_wynajem','id_transakcji_wynajem',
+    'wynajem(id_transakcji_wynajem)')
+    add_foreign_key(engine,'spichlerz_sklep','FK_id_gry2','id_gry','gry(id_gry)')
+    add_foreign_key(engine,'spichlerz_wynajem','FK_id_gry1','id_gry','gry(id_gry)')
+    add_foreign_key(engine,'sklep','FK_id_spichlerz_sklep','id_spichlerz_sklep',
+    'spichlerz_sklep(id_spichlerz_sklep)')
+    add_foreign_key(engine,'sklep','FK_id_pracownika1','id_pracownika','pracownicy(id_pracownika)')
+    add_foreign_key(engine,'sklep','FK_id_klienta1','id_klienta','klienci(id_klienta)')
+    add_foreign_key(engine,'turnieje','FK_id_rodzaj','id_rodzaj','rodzaje_turniejów(id_rodzaj)')
+    add_foreign_key(engine,'wynajem','FK_id_spichlerz_wynajem','id_spichlerz_wynajem','spichlerz_wynajem(id_spichlerz_wynajem)')
+    add_foreign_key(engine,'wynajem','FK_id_pracownika2','id_pracownika','pracownicy(id_pracownika)')
+    add_foreign_key(engine,'wynajem','FK_id_klienta2','id_klienta','klienci(id_klienta)')
+    add_foreign_key(engine,'wyniki','FK_id_turniej','id_turniej','turnieje(id_turniej)')
+    add_foreign_key(engine,'wyniki','FK_id_klienta3','id_klienta','klienci(id_klienta)')
+
     conn.close()
     print("hura")
 

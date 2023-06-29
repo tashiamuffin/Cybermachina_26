@@ -136,10 +136,12 @@ DROP TABLE wyniki;
 
 CREATE TABLE wyniki
 (
+  id_wynik       INT NOT NULL PRIMARY KEY UNIQUE AUTO_INCREMENT,
   id_turniej     INT NOT NULL,
   id_klienta     INT NOT NULL,
   wynik          INT NULL    ,
   czas_rozgrywki INT NULL    
+  
 );
 --  relacje, nie dotykać
 ALTER TABLE spichlerz_wynajem
