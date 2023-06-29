@@ -1,53 +1,127 @@
 -- 1. Wyznacz ranking na pracownika miesiąca dla każdego miesiąca, w którym sklep prowadził sprzedaż. -----------
+SET lc_time_names = 'pl_PL'; ##to sprawia że mamy miesiące po polsku więc proszę to zostawić
 
-SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, MONTH(data_wynajmu), SUM(cena_wynajem) AS "przychód - wynajem"
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, DATE_FORMAT(data_wynajmu, '%M') AS miesiąc, YEAR(data_wynajmu) AS rok, SUM(cena_wynajem) AS "przychód - wynajem"
 FROM wynajem
 LEFT JOIN pracownicy USING(id_pracownika)
-GROUP BY id_pracownika, MONTH(data_wynajmu)
-ORDER BY MONTH(data_wynajmu), SUM(cena_wynajem) DESC;
+GROUP BY id_pracownika, DATE_FORMAT(data_wynajmu, '%M'), YEAR(data_wynajmu)
+ORDER BY YEAR(data_wynajmu), MONTH(data_wynajmu), SUM(cena_wynajem) DESC;
 
-SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, MONTH(wizyta), SUM(cena_kupno) AS "przychód - sprzedaż"
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika,  DATE_FORMAT(data_zakupu, '%M') AS miesiąc, YEAR(data_zakupu) AS rok, SUM(cena_kupno) AS "przychód - sprzedaż"
 FROM sklep
 LEFT JOIN pracownicy USING(id_pracownika)
-GROUP BY id_pracownika, MONTH(wizyta)
-ORDER BY MONTH(wizyta), SUM(cena_kupno) DESC;
+GROUP BY id_pracownika,  DATE_FORMAT(data_zakupu, '%M'), YEAR(data_zakupu)
+ORDER BY YEAR(data_zakupu), MONTH(data_zakupu), SUM(cena_kupno) DESC;
 
-SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, MONTH(wizyta), SUM(cena_outlet) AS "przychód - outlet"
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc, YEAR(data_zakupu) AS rok, SUM(cena_outlet) AS "przychód - outlet"
 FROM outlet
 LEFT JOIN pracownicy USING(id_pracownika)
-GROUP BY id_pracownika, MONTH(wizyta)
-ORDER BY MONTH(wizyta), SUM(cena_outlet) DESC;
+GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'), YEAR(data_zakupu)
+ORDER BY YEAR(data_zakupu), MONTH(data_zakupu), SUM(cena_outlet) DESC;
 
 
 -- łącznie 
 WITH sss AS (
 
-SELECT id_pracownika, MONTH(data_wynajmu) AS miesiąc, SUM(cena_wynajem) AS "przychód", "WYNAJEM"
+SELECT id_pracownika, DATE_FORMAT(data_wynajmu, '%M') AS miesiąc,  YEAR(data_wynajmu) AS rok, SUM(cena_wynajem) AS "przychód", "WYNAJEM", MONTH(data_wynajmu) AS msc
 FROM wynajem
-GROUP BY id_pracownika, MONTH(data_wynajmu)
+GROUP BY id_pracownika, DATE_FORMAT(data_wynajmu, '%M'),  YEAR(data_wynajmu)
 
 UNION ALL
 
-SELECT id_pracownika, MONTH(data_zakupu) AS miesiąc, SUM(cena_kupno) AS "przychód", "KUPNO"
+SELECT id_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc,  YEAR(data_zakupu) AS rok, SUM(cena_kupno) AS "przychód", "KUPNO", MONTH(data_zakupu) AS msc
 FROM sklep
-GROUP BY id_pracownika, MONTH(data_zakupu)
+GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'),  YEAR(data_zakupu)
 
 UNION ALL
 
-SELECT id_pracownika, MONTH(data_zakupu) AS miesiąc, SUM(cena_outlet) AS "przychód", "OUTLET"
+SELECT id_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc,  YEAR(data_zakupu) AS rok, SUM(cena_outlet) AS "przychód", "OUTLET", MONTH(data_zakupu) AS msc
 FROM outlet
-GROUP BY id_pracownika, MONTH(data_zakupu)
+GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'),  YEAR(data_zakupu)
 )
 
-SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, SUM(przychód) AS "przychody"
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, rok, SUM(przychód) AS "przychody"
 FROM sss
 JOIN pracownicy USING(id_pracownika)
-GROUP BY id_pracownika, miesiąc
-ORDER BY miesiąc, SUM(przychód) DESC;
+GROUP BY id_pracownika, miesiąc, rok
+ORDER BY rok, msc, SUM(przychód) DESC;
 
--- 2. te turnieje coś tam (work in progress)
+-- 2. Najlepsi gracze w poszczególnych turniejach (top 10)
 
--- cisowianka
+--SELECT id_klienta, imię, nazwisko, SUM(wynik), id_rodzaj
+--FROM wyniki
+--INNER JOIN klienci USING(id_klienta)
+--INNER JOIN turnieje USING(id_turniej)
+--GROUP BY id_rodzaj, id_klienta
+--ORDER BY SUM(wynik) DESC
+
+--SELECT id_klienta, wynik, id_rodzaj
+--from wyniki
+--INNER JOIN turnieje USING(id_turniej)
+--WHERE id_klienta = "1836"
+
+-- patrzę po wszystkich turniejach osobno
+
+-- "Alchemicy"
+SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
+FROM wyniki
+INNER JOIN klienci USING(id_klienta)
+INNER JOIN turnieje USING(id_turniej)
+INNER JOIN rodzaje_turniejów USING(id_rodzaj)
+INNER JOIN gry USING(id_gry)
+WHERE id_rodzaj = "1"
+GROUP BY id_klienta
+ORDER BY wynik DESC
+LIMIT 10
+
+-- "Palec Boży"
+SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
+FROM wyniki
+INNER JOIN klienci USING(id_klienta)
+INNER JOIN turnieje USING(id_turniej)
+INNER JOIN rodzaje_turniejów USING(id_rodzaj)
+INNER JOIN gry USING(id_gry)
+WHERE id_rodzaj = "2"
+GROUP BY id_klienta
+ORDER BY wynik DESC
+LIMIT 10
+
+-- "Wsiąść do pociągu"
+SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
+FROM wyniki
+INNER JOIN klienci USING(id_klienta)
+INNER JOIN turnieje USING(id_turniej)
+INNER JOIN rodzaje_turniejów USING(id_rodzaj)
+INNER JOIN gry USING(id_gry)
+WHERE id_rodzaj = "3"
+GROUP BY id_klienta
+ORDER BY wynik DESC
+LIMIT 10
+
+-- "Carcassone"
+SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
+FROM wyniki
+INNER JOIN klienci USING(id_klienta)
+INNER JOIN turnieje USING(id_turniej)
+INNER JOIN rodzaje_turniejów USING(id_rodzaj)
+INNER JOIN gry USING(id_gry)
+WHERE id_rodzaj = "4"
+GROUP BY id_klienta
+ORDER BY wynik DESC
+LIMIT 10
+
+-- "Scrabble"
+SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
+FROM wyniki
+INNER JOIN klienci USING(id_klienta)
+INNER JOIN turnieje USING(id_turniej)
+INNER JOIN rodzaje_turniejów USING(id_rodzaj)
+INNER JOIN gry USING(id_gry)
+WHERE id_rodzaj = "5"
+GROUP BY id_klienta
+ORDER BY wynik DESC
+LIMIT 10
+
 
 -- 3. Ustal, które gry przynoszą największy dochód ze sprzedaży, a które z wypożyczeń. --------------
 -- just suma po tytule gry
@@ -63,18 +137,11 @@ SELECT id_gry, tytuł, COUNT(id_transakcji_wynajem) AS "ile_gier_wynajem", SUM(c
 			ROUND(SUM(cena_wynajem)/ile_gier/cena_wynajem, 2) AS "znormalizowany średni dochód"
 FROM wynajem
 LEFT JOIN spichlerz_wynajem USING(id_spichlerz_wynajem)
-JOIN gra USING(id_gry)
+JOIN gry USING(id_gry)
 JOIN ilość USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_wynajem)/ile_gier/cena_wynajem DESC;
 
-
--- SELECT id_gry, tytuł, SUM(cena_kupno) AS "dochód gry sklep", COUNT(id_gry)
--- FROM sklep
--- LEFT JOIN spichlerz_sklep USING(id_spichlerz_sklep)
--- JOIN gry USING(id_gry)
--- GROUP BY id_gry
--- ORDER BY SUM(cena_kupno) DESC;
 
 WITH ilość AS (SELECT id_gry, COUNT(id_gry) AS "ile_gier_inv"
 					FROM spichlerz_sklep
@@ -85,7 +152,7 @@ SELECT id_gry, tytuł,  COUNT(id_transakcji_sklep) AS "ile_gier_zakup", ile_gier
 			ROUND(SUM(cena_kupno)/ile_gier_inv/cena_kupno, 2) AS "znormalizowany średni dochód"
 FROM sklep
 LEFT JOIN spichlerz_sklep USING(id_spichlerz_sklep)
-JOIN gra USING(id_gry)
+JOIN gry USING(id_gry)
 JOIN ilość USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_kupno)/ile_gier_inv/cena_kupno DESC;
@@ -93,7 +160,7 @@ ORDER BY SUM(cena_kupno)/ile_gier_inv/cena_kupno DESC;
 -- dla outletu zwykła suma? (a tutaj to trzeba ogarnąć jeszcze)
 SELECT id_gry, tytuł, SUM(cena_outlet), COUNT(id_transakcji_outlet)
 FROM outlet
-JOIN gra USING(id_gry)
+JOIN gry USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_outlet) DESC;
 
@@ -121,30 +188,7 @@ GROUP BY id_klienta
 ORDER BY SUM(cena_outlet) DESC
 LIMIT 10;
 
-SELECT *
-FROM sklep
-WHERE id_klienta IN (3671, 3772, 3936); -- żeby nie bylo że ci adamczykowie to stinky cheese jest XD
-
-
 -- ogólnie:
--- tutaj sobie sprawdzam czy pan czesław faktycznie kupił coś ze sklepu, z outletu i wynajął i czy ceny się zgadzają
-SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_wynajem), COUNT(id_transakcji_wynajem)
-FROM wynajem
-LEFT JOIN klienci USING(id_klienta)
-WHERE id_klienta = 2360
-GROUP BY id_klienta;
-
-SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_outlet), COUNT(id_transakcji_outlet)
-FROM outlet
-LEFT JOIN klienci USING(id_klienta)
-WHERE id_klienta = 2360
-GROUP BY id_klienta;
-
-SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_kupno), COUNT(id_transakcji_sklep)
-FROM sklep
-LEFT JOIN klienci USING(id_klienta)
-WHERE id_klienta = 2360
-GROUP BY id_klienta;
 
 -- ogólna funkcja (czyli w sumie tylko to nas interesuje)
 WITH aaa AS (
@@ -175,28 +219,28 @@ ORDER BY łącznie DESC
 LIMIT 20;
 
 -- Mieszkańcy której ulicy najczęściej wypożyczali, a której najczęściej kupowali nasze gry?
--- tu będzie jeszcze kombinowanie z tymi ulicami żeby mogło być w 1 kolumnie
+-- REPLACE REPLACE REPLACE REPLACE REPLACE REPLACE REPLACE REPLACE
 
-SELECT ulica, COUNT(*) as zakupione_gry, SUM(cena_kupno) wydane_$
+SELECT REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(adres, "0", ""), "1", ""), "2", ""), "3", ""), "4", ""), "5", ""), "6", ""), "7", ""), "8", ""), "9", "") as ulica, COUNT(*) as zakupione_gry, SUM(cena_kupno) wydane_$
 FROM sklep 
 INNER JOIN klienci 
 USING(id_klienta)
-WHERE ulica NOT LIKE "NULL"
+WHERE adres NOT LIKE "NULL"
 GROUP BY ulica
 ORDER BY zakupione_gry DESC;
 
-SELECT ulica, COUNT(*) as wypożyczone_gry, SUM(cena_wynajem) wydane_$
+SELECT REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(adres, "0", ""), "1", ""), "2", ""), "3", ""), "4", ""), "5", ""), "6", ""), "7", ""), "8", ""), "9", "") as ulica, COUNT(*) as wypożyczone_gry, SUM(cena_wynajem) wydane_$
 FROM wynajem 
 INNER JOIN klienci 
 USING(id_klienta)
-WHERE ulica NOT LIKE "NULL"
+WHERE adres NOT LIKE "NULL"
 GROUP BY ulica
-ORDER BY wydane_$ DESC;
+ORDER BY wypożyczone_gry DESC;
 
 -- TOP 3 DNI Z NAJCZĘSTSZYMI ODWIEDZIAMI (kupno+wynajem+outlet)
 
 WITH ulsko AS (
-SELECT COUNT(*) as ilość, DATE(wizyta) as dzień, SUM(cena_kupno) as przychód
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_kupno) as przychód
 FROM sklep
 GROUP BY dzień
 
@@ -208,7 +252,32 @@ GROUP BY dzień
 
 UNION ALL
 
-SELECT COUNT(*) as ilość, DATE(wizyta) as dzień, SUM(cena_outlet) as przychód
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_outlet) as przychód
+FROM outlet
+GROUP BY dzień
+)
+
+SELECT dzień, SUM(ilość) as "ilość wizyt", DATE_FORMAT(dzień, '%W') AS dzień_tygodnia, SUM(przychód) as przychód
+FROM ulsko
+GROUP BY dzień
+ORDER BY SUM(ilość) DESC
+LIMIT 5;
+
+-- i teraz dane do rozkładu - df z datą i ilością odwiedzin
+WITH ulsko AS (
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_kupno) as przychód
+FROM sklep
+GROUP BY dzień
+
+UNION ALL
+
+SELECT COUNT(*) as ilość, DATE(data_wynajmu) as dzień, SUM(cena_wynajem) as przychód
+FROM wynajem
+GROUP BY dzień
+
+UNION ALL
+
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_outlet) as przychód
 FROM outlet
 GROUP BY dzień
 )
@@ -216,31 +285,71 @@ GROUP BY dzień
 SELECT dzień, SUM(ilość) as "ilość wizyt", SUM(przychód) as przychód
 FROM ulsko
 GROUP BY dzień
-ORDER BY SUM(ilość) DESC
-LIMIT 3;
+ORDER BY dzień;
 
--- Podział na dni tygodnia ??? (gówno jakieś to na razie jest)
+-- Podział na dni tygodnia - który dzień tygodnia najbardziej busy overall
 
 WITH ulsko AS (
-SELECT COUNT(wizyta), DATE(wizyta) as den, WEEKDAY(wizyta) as den_tygodnia
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_kupno) as przychód
 FROM sklep
-GROUP BY den;
+GROUP BY dzień
 
 UNION ALL
 
-SELECT COUNT(DISTINCT id_klienta), WEEKDAY(data_wynajmu) as den
+SELECT COUNT(*) as ilość, DATE(data_wynajmu) as dzień, SUM(cena_wynajem) as przychód
 FROM wynajem
-GROUP BY den;
+GROUP BY dzień
 
 UNION ALL
 
-SELECT COUNT(wizyta), DATE(wizyta) as den
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_outlet) as przychód
 FROM outlet
-GROUP BY den
+GROUP BY dzień
+)
 
--- TU BĘDZIE JESZCZE 1 PYTANIE (albo więcej bo czemu nie)
--- najczęściej wypożyczana gra (tytuł)/ egzemplarz gry, najczęściej niszczona gra/egzemplarz
--- coś z outletem - najczęściej pojawiająca się tam gra czyli w sumie najczęściej niszczona) - może jaki rodzaj gry
--- które serie gier zarabiają dla nas najwięcej (średnio)/ są najczęściej wypożyczane
--- coś z rodzajami gier (ten outlet?)
--- jakaś analiza wieku - rozkład wieku klientów? XD
+SELECT DATE_FORMAT(dzień, '%W') AS "dzień tygodnia", SUM(ilość) as "ilość wizyt", SUM(przychód) as przychód
+FROM ulsko
+GROUP BY DATE_FORMAT(dzień, '%W')
+ORDER BY WEEKDAY(dzień);
+
+SELECT DATE(data_wynajmu), DATE_FORMAT(data_wynajmu, '%W')
+FROM wynajem
+GROUP BY DATE(data_wynajmu)
+ORDER BY DATE(data_wynajmu);
+
+-- Najpopularniejszy rodzaj (też osobno, ale może da się ładnie w jednym)
+
+WITH grr AS(
+	SELECT tytuł, COUNT(id_transakcji_sklep) as ilość
+	FROM gry
+	INNER JOIN spichlerz_sklep USING(id_gry)
+	INNER JOIN sklep USING(id_spichlerz_sklep)
+	GROUP BY tytuł
+
+	UNION ALL
+
+	SELECT tytuł, COUNT(id_transakcji_wynajem) as ilość
+	FROM gry
+	INNER JOIN spichlerz_wynajem USING(id_gry)
+	INNER JOIN wynajem USING(id_spichlerz_wynajem)
+	GROUP BY tytuł
+)
+
+-- Monopoly
+SELECT tytuł, SUM(ilość) as "kupno+wynajem" FROM grr
+WHERE tytuł LIKE "Monopoly%"
+GROUP BY tytuł
+ORDER BY SUM(ilość) DESC
+
+-- Dobble
+SELECT tytuł, SUM(ilość) as "kupno+wynajem" FROM grr
+WHERE tytuł LIKE "Dobble%"
+GROUP BY tytuł
+ORDER BY SUM(ilość) DESC
+
+-- Wsiąść do pociągu
+SELECT tytuł, SUM(ilość) as "kupno+wynajem" FROM grr
+WHERE tytuł LIKE "Wsiąść%"
+GROUP BY tytuł
+ORDER BY SUM(ilość) DESC
+
