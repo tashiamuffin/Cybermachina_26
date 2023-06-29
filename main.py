@@ -303,7 +303,7 @@ def format_tabel(wizyty, gry = gry):
     
     klienci_mieszkancy = klienci[["id_klienta", "id_mieszkańca"]] ##tabela pomocnicza z id klienta dopasowanymi do mieszkańca
     
-    klienci = klienci[["id_klienta", "wizyta", "imię", "nazwisko", "wiek", "ulica", "nr_domu", "telefon"]] #końcowa tabela klientów
+    klienci = klienci[["id_klienta", "wizyta", "imię", "nazwisko", "wiek", "adres", "telefon"]] #końcowa tabela klientów
     
     ## ---------------- TABELA SPICHLERZ_WYNAJEM ---------------
     ceny = gry[["id_gry","cena"]]
