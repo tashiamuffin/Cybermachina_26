@@ -491,7 +491,7 @@ def turniej(gracze, stoly, gry, inv, rental):
     max_graczy = np.array(gra_tournament['max_graczy'])*amount.astype(int)
 
     # średnia z punktów dla poszczególnych gier
-    mean_point = np.array([110, 50, 150, 69, 62])
+    mean_point = np.array([62, 69, 110, 50, 150])
     # tworzenie dataframe
     spis_turniej = pd.DataFrame({'id_spis':id_spis,'id_gry':gra_tournament['id_gry'],'średnia_punktów' : mean_point,
                             'ilosc_gier' : amount[0], 'min_graczy': min_graczy[0], 'max_graczy':max_graczy[0]})
