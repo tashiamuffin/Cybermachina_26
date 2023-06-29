@@ -46,8 +46,7 @@ def ludzie(mi, ki, mn, kn, ul, pk= 0.516, N=7349 ):
     imie = []
     nazwisko = []
     wiek = []
-    ulica = []
-    nr_domu = []
+    adres = []
     tel = []
     
     for n in range(N):
@@ -74,8 +73,7 @@ def ludzie(mi, ki, mn, kn, ul, pk= 0.516, N=7349 ):
             
         p = random.random()   
         if p< 0.90:
-            ulica.append(random.choice(ul))
-            nr_domu.append(random.randint(1,100))
+            adres.append(random.choice(ul) + " " + str(random.randint(1,100)))
             
             p = random.random()
             if p< 0.90:
@@ -84,12 +82,11 @@ def ludzie(mi, ki, mn, kn, ul, pk= 0.516, N=7349 ):
                 tel.append("NULL")
                 
         else:
-            ulica.append("NULL")
-            nr_domu.append("NULL")
+            adres.append("NULL")
             tel.append(random.randint(500000000, 999999999))
     
     return pd.DataFrame({"id_mieszkańca": range(1,N+1), "imię": imie, "nazwisko": nazwisko, 
-                         "wiek": wiek, "ulica": ulica, "nr_domu": nr_domu, "telefon": tel})
+                         "wiek": wiek, "adres": adres, "telefon": tel})
 
 def transform_wiek(wiek): 
     """
