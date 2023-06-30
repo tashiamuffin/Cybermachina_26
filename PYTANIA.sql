@@ -40,7 +40,7 @@ FROM outlet
 GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'),  YEAR(data_zakupu)
 )
 
-SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, rok, SUM(przychód) AS "przychody"
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, msc, rok, SUM(przychód) AS "przychody"
 FROM sss
 JOIN pracownicy USING(id_pracownika)
 GROUP BY id_pracownika, miesiąc, rok
@@ -48,17 +48,17 @@ ORDER BY rok, msc, SUM(przychód) DESC;
 
 -- 2. Najlepsi gracze w poszczególnych turniejach (top 10)
 
---SELECT id_klienta, imię, nazwisko, SUM(wynik), id_rodzaj
---FROM wyniki
---INNER JOIN klienci USING(id_klienta)
---INNER JOIN turnieje USING(id_turniej)
---GROUP BY id_rodzaj, id_klienta
---ORDER BY SUM(wynik) DESC
+-- SELECT id_klienta, imię, nazwisko, SUM(wynik), id_rodzaj
+-- FROM wyniki
+-- INNER JOIN klienci USING(id_klienta)
+-- INNER JOIN turnieje USING(id_turniej)
+-- GROUP BY id_rodzaj, id_klienta
+-- ORDER BY SUM(wynik) DESC
 
---SELECT id_klienta, wynik, id_rodzaj
---from wyniki
---INNER JOIN turnieje USING(id_turniej)
---WHERE id_klienta = "1836"
+-- SELECT id_klienta, wynik, id_rodzaj
+-- from wyniki
+-- INNER JOIN turnieje USING(id_turniej)
+-- WHERE id_klienta = "1836"
 
 -- patrzę po wszystkich turniejach osobno
 
@@ -72,7 +72,7 @@ INNER JOIN gry USING(id_gry)
 WHERE id_rodzaj = "1"
 GROUP BY id_klienta
 ORDER BY wynik DESC
-LIMIT 10
+LIMIT 10;
 
 -- "Palec Boży"
 SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
@@ -84,7 +84,7 @@ INNER JOIN gry USING(id_gry)
 WHERE id_rodzaj = "2"
 GROUP BY id_klienta
 ORDER BY wynik DESC
-LIMIT 10
+LIMIT 10;
 
 -- "Wsiąść do pociągu"
 SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
@@ -96,7 +96,7 @@ INNER JOIN gry USING(id_gry)
 WHERE id_rodzaj = "3"
 GROUP BY id_klienta
 ORDER BY wynik DESC
-LIMIT 10
+LIMIT 10;
 
 -- "Carcassone"
 SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
@@ -108,7 +108,7 @@ INNER JOIN gry USING(id_gry)
 WHERE id_rodzaj = "4"
 GROUP BY id_klienta
 ORDER BY wynik DESC
-LIMIT 10
+LIMIT 10;
 
 -- "Scrabble"
 SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł
@@ -120,7 +120,7 @@ INNER JOIN gry USING(id_gry)
 WHERE id_rodzaj = "5"
 GROUP BY id_klienta
 ORDER BY wynik DESC
-LIMIT 10
+LIMIT 10;
 
 
 -- 3. Ustal, które gry przynoszą największy dochód ze sprzedaży, a które z wypożyczeń. --------------
@@ -160,6 +160,7 @@ ORDER BY SUM(cena_kupno)/ile_gier_inv/cena_kupno DESC;
 -- dla outletu zwykła suma? (a tutaj to trzeba ogarnąć jeszcze)
 SELECT id_gry, tytuł, SUM(cena_outlet), COUNT(id_transakcji_outlet)
 FROM outlet
+JOIN spichlerz_wynajem USING(id_spichlerz_wynajem)
 JOIN gry USING(id_gry)
 GROUP BY id_gry
 ORDER BY SUM(cena_outlet) DESC;
@@ -312,11 +313,6 @@ FROM ulsko
 GROUP BY DATE_FORMAT(dzień, '%W')
 ORDER BY WEEKDAY(dzień);
 
-SELECT DATE(data_wynajmu), DATE_FORMAT(data_wynajmu, '%W')
-FROM wynajem
-GROUP BY DATE(data_wynajmu)
-ORDER BY DATE(data_wynajmu);
-
 -- Najpopularniejszy rodzaj (też osobno, ale może da się ładnie w jednym)
 
 WITH grr AS(
@@ -339,17 +335,78 @@ WITH grr AS(
 SELECT tytuł, SUM(ilość) as "kupno+wynajem" FROM grr
 WHERE tytuł LIKE "Monopoly%"
 GROUP BY tytuł
-ORDER BY SUM(ilość) DESC
+ORDER BY SUM(ilość) DESC;
 
 -- Dobble
+WITH grr AS(
+	SELECT tytuł, COUNT(id_transakcji_sklep) as ilość
+	FROM gry
+	INNER JOIN spichlerz_sklep USING(id_gry)
+	INNER JOIN sklep USING(id_spichlerz_sklep)
+	GROUP BY tytuł
+
+	UNION ALL
+
+	SELECT tytuł, COUNT(id_transakcji_wynajem) as ilość
+	FROM gry
+	INNER JOIN spichlerz_wynajem USING(id_gry)
+	INNER JOIN wynajem USING(id_spichlerz_wynajem)
+	GROUP BY tytuł
+)
+
 SELECT tytuł, SUM(ilość) as "kupno+wynajem" FROM grr
 WHERE tytuł LIKE "Dobble%"
 GROUP BY tytuł
-ORDER BY SUM(ilość) DESC
+ORDER BY SUM(ilość) DESC;
 
 -- Wsiąść do pociągu
+WITH grr AS(
+	SELECT tytuł, COUNT(id_transakcji_sklep) as ilość
+	FROM gry
+	INNER JOIN spichlerz_sklep USING(id_gry)
+	INNER JOIN sklep USING(id_spichlerz_sklep)
+	GROUP BY tytuł
+
+	UNION ALL
+
+	SELECT tytuł, COUNT(id_transakcji_wynajem) as ilość
+	FROM gry
+	INNER JOIN spichlerz_wynajem USING(id_gry)
+	INNER JOIN wynajem USING(id_spichlerz_wynajem)
+	GROUP BY tytuł
+)
 SELECT tytuł, SUM(ilość) as "kupno+wynajem" FROM grr
 WHERE tytuł LIKE "Wsiąść%"
 GROUP BY tytuł
-ORDER BY SUM(ilość) DESC
+ORDER BY SUM(ilość) DESC;
+
+-- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA - te średnie z serii
+
+WITH grr AS(
+	SELECT tytuł, COUNT(id_transakcji_sklep) as ilość
+	FROM gry
+	INNER JOIN spichlerz_sklep USING(id_gry)
+	INNER JOIN sklep USING(id_spichlerz_sklep)
+	GROUP BY tytuł
+
+	UNION ALL
+
+	SELECT tytuł, COUNT(id_transakcji_wynajem) as ilość
+	FROM gry
+	INNER JOIN spichlerz_wynajem USING(id_gry)
+	INNER JOIN wynajem USING(id_spichlerz_wynajem)
+	GROUP BY tytuł
+)
+SELECT CASE WHEN tytuł LIKE "Wsiąść%" THEN "Wsiąść do Pociągu" 
+				WHEN tytuł LIKE "Monopoly%" THEN "Monopoly"
+				WHEN tytuł LIKE "Dobble%" THEN "Dobble" 
+				END AS seria, AVG(ilość)*2 AS średnia FROM grr
+WHERE CASE WHEN tytuł LIKE "Wsiąść%" THEN "Wsiąść do Pociągu" 
+			  WHEN tytuł LIKE "Monopoly%" THEN "Monopoly"
+			  WHEN tytuł LIKE "Dobble%" THEN "Dobble" 
+			  END NOT LIKE "NULL"
+GROUP BY seria
+ORDER BY średnia DESC;
+
+
 
