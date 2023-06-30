@@ -703,7 +703,7 @@ if __name__ == "__main__":
 
 
     pygame.init()
-    pygame.mixer.music.load('outro-song_oqu8zAg.mp3')
+    pygame.mixer.music.load('sound/outro-song_oqu8zAg.mp3')
 
     pygame.mixer.music.play()
 

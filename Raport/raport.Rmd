@@ -1,0 +1,771 @@
+---
+title: "Raport"
+author: "Michał Bresiński, Natalia Lach, Alicja Myśliwiec, Filip Oszczepaliński"
+output:
+  pdf_document
+date: "2023-06-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+```{r, echo=FALSE}
+# IMPORTY R 
+library(reticulate)
+#use_python("C:\\Users\\alicj\\AppData\\Local\\Programs\\Python")
+```
+
+```{python, echo=FALSE}
+# IMPORTY PYTHON
+
+from sqlalchemy import create_engine, inspect
+from sqlalchemy import URL, text
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+
+pd.set_option('display.max_columns', None)
+```
+
+```{python, echo=FALSE}
+# POŁĄCZENIE Z BAZĄ
+
+url_object = URL.create(
+    "mysql+pymysql",
+    username="team26",
+    password="te@mzg",
+    host="giniewicz.it",
+    database="team26",
+)
+
+#te@mzg
+
+engine = create_engine(url_object)
+```
+\section{\textit{Wyznacz ranking na pracownika miesiąca dla każdego miesiąca, w którym sklep prowadził sprzedaż.}}
+
+```{python, echo=FALSE, results='hide'}
+connection = engine.connect()
+
+connection.execute(text("SET lc_time_names = 'pl_PL'"))
+
+result = connection.execute(text("WITH sss AS ( \
+SELECT id_pracownika, DATE_FORMAT(data_wynajmu, '%M') AS miesiąc,  YEAR(data_wynajmu) AS rok,SUM(cena_wynajem) AS przychód, 'WYNAJEM', MONTH(data_wynajmu) AS msc \
+FROM wynajem \
+GROUP BY id_pracownika, DATE_FORMAT(data_wynajmu, '%M'),  YEAR(data_wynajmu) \
+UNION ALL \
+SELECT id_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc,  YEAR(data_zakupu) AS rok, SUM(cena_kupno) AS przychód, 'KUPNO', MONTH(data_zakupu) AS msc \
+FROM sklep \
+GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'),  YEAR(data_zakupu) \
+UNION ALL \
+SELECT id_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc,  YEAR(data_zakupu) AS rok, SUM(cena_outlet) AS przychód, 'OUTLET', MONTH(data_zakupu) AS msc \
+FROM outlet \
+GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'),  YEAR(data_zakupu) \
+) \
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, msc, rok, SUM(przychód) AS przychody,RANK() OVER(PARTITION BY miesiąc, rok ORDER BY SUM(przychód) DESC) AS ranking \
+FROM sss \
+JOIN pracownicy USING(id_pracownika) \
+GROUP BY id_pracownika, miesiąc, rok \
+ORDER BY rok, msc, SUM(przychód) DESC;"))
+
+df1 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+i, n = np.array(df1['imię_pracownika']), np.array(df1['nazwisko_pracownika'])
+godność = i + ' ' + n
+df1['pracownik'] = godność
+df11 = df1[['id_pracownika', 'pracownik', 'miesiąc', 'rok', 'przychody', 'ranking' ]]
+df11
+```
+
+```{python, echo=FALSE}
+df_pivot =df1.sort_values(by=['rok','msc'], ascending=[True, True])
+df_pivot = df1.pivot_table(index=['rok', 'msc'], columns='imię_pracownika', values='przychody')
+ax = df_pivot.plot(kind='bar', color=['#53A2BE', '#E6A4AC'])
+
+ax.set_xlabel('Rok, Miesiąc')
+ax.set_ylabel('Przychody')
+ax.set_title('Przychody wygenerowane przez pracowników\n  w poszczególnych miesiącach')
+ax.legend(title='Pracownicy')
+
+plt.xticks(rotation=45)  
+plt.tight_layout() 
+plt.show()
+```
+Na powyższym wykresie dobrze widoczne są różnice pomiędzy przychodami wygenerowanymi przez konkretnych pracowników, łatwo więc stwierdzić, który z nich poradził sobie lepiej w danym miesiącu działalności sklepu. 
+```{python, echo=FALSE}
+filtered_data = df1.loc[(df1['miesiąc'] == 'grudzień') & (df1['rok'] == 2022)]
+best_month_year = filtered_data['przychody'].idxmax()
+best_employee = filtered_data.loc[best_month_year, 'imię_pracownika']
+best_revenue = str(filtered_data.loc[best_month_year, 'przychody'])
+```
+Przykładowo w grudniu 2022 najlepsze przychody zostały wygenerowane przez `r py$best_employee` w wysokości `r py$best_revenue`zł co spowodowało otrzymanie tytułu pracownika miesiąca.
+
+Dodatkowo można pokazać, o ile większy utarg zrobił najlepszy pracownik konkretnego miesiąca.
+
+```{python, echo=FALSE}
+df_best_employee = df1[df1["ranking"] == 1].copy()
+df_second_best_employee = df1[df1["ranking"] == 2].copy()
+
+df_best_employee.loc[:, 'różnica_przychodów'] = np.array(df_best_employee['przychody']) - np.array(df_second_best_employee['przychody'])
+df_best_employee = df_best_employee.rename(columns={"imię_pracownika": "pracownik_miesiąca"})
+df_best_employee = df_best_employee[["id_pracownika", "pracownik_miesiąca", "miesiąc", "rok", "różnica_przychodów"]]
+df_best_employee
+```
+
+\section{\textit{Sporządź analizę top 10 zawodników turniejowych w zależności od gry.}}
+
+W działalność sklepu wchodzi również prowadzenie turniejów z 5 różnych gier. Dla każdej z nich przedstawiono poniżej ranking 10 najlepszych zawodników (Turnieje tej samej gry są od siebie niezależne. Może zdarzyć się, że jedna osoba pojawi się w rankningu parę razy.).
+
+- Alchemicy
+```{python, echo=FALSE}
+
+def turniej(rodzaj):
+  return "SELECT RANK() OVER (ORDER BY wynik DESC) AS rank, wynik, miejsce AS miejsce_turniej, id_klienta, imię, nazwisko, wiek, tytuł \
+FROM wyniki \
+INNER JOIN klienci USING(id_klienta) \
+INNER JOIN turnieje USING(id_turniej) \
+INNER JOIN rodzaje_turniejów USING(id_rodzaj) \
+INNER JOIN gry USING(id_gry) \
+WHERE id_rodzaj = {} \
+GROUP BY id_klienta \
+ORDER BY wynik DESC \
+LIMIT 10;".format(rodzaj)
+
+connection = engine.connect()
+
+result = connection.execute(text(turniej('1')))
+
+df21 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df211 = df21.drop("tytuł", axis=1)
+df211
+```
+```{python, echo=FALSE}
+def find_best(df, place):
+  df_pierwsze_miejsce = df.loc[df['rank'] == place]
+  lista_osob = df_pierwsze_miejsce.apply(lambda row: f"{row['imię']} {row['nazwisko']}", axis=1).tolist()
+  ciag_osob = ', '.join(lista_osob)
+
+  wynik = df.iloc[place-1]["wynik"]
+  wynik_top = df.iloc[0]["imię"]
+  wynik_top2 = df.iloc[0]["nazwisko"]
+  if len(df_pierwsze_miejsce) > 1:
+    return "{} miejsce zajmują: {} - z wynikiem {}.".format(place, ciag_osob, wynik)
+  else:
+    return "{} miejsce zajmuje {} {} z wynikiem {}.".format(place, wynik_top, wynik_top2, wynik)
+    
+odp = find_best(df211, 1)
+```
+Jak widać w powyższej tabeli, `r py$odp` 
+
+- Palec Boży
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('2')))
+
+df22 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df221 = df22.drop("tytuł", axis=1)
+df221
+```
+```{python, echo=FALSE}
+odp = find_best(df221, 1)
+```
+Jak widać w powyższej tabeli, `r py$odp` 
+
+- Wsiąść do Pociągu: Europa 
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('3')))
+
+df23 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df231 = df23.drop("tytuł", axis=1)
+df231
+```
+```{python, echo=FALSE}
+odp = find_best(df231, 1)
+```
+Jak widać w powyższej tabeli, `r py$odp` 
+
+- Carcassone
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('4')))
+
+df24 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df241 = df24.drop("tytuł", axis=1)
+df241
+```
+```{python, echo=FALSE}
+odp = find_best(df241, 1)
+```
+Jak widać w powyższej tabeli, `r py$odp` 
+
+- Scrabble
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('5')))
+
+df25 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df251 = df25.drop("tytuł", axis=1)
+df251
+```
+```{python, echo=FALSE}
+odp = find_best(df251, 1)
+```
+Jak widać w powyższej tabeli, `r py$odp` 
+
+
+\section{\textit{Ustal, które gry przynoszą największy dochód ze sprzedaży, a które z wypożyczeń.}}
+
+Nasz sklep prowadzi zarówno sprzedaż gier jak i ich wynajem, zatem dobrym pomysłem byłaby analiza tych dwóch źródeł dochodu. Poniżej przedstawiono tabelę, w której zawarto 5 najbardziej dochodowych gier biorąc pod uwagę wynajem.
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ilość AS (SELECT id_gry, COUNT(id_gry) AS 'ile_gier' \
+					FROM spichlerz_wynajem \
+					GROUP BY id_gry) \
+SELECT id_gry, tytuł, COUNT(id_transakcji_wynajem) AS 'ile_gier_wynajem', SUM(cena_wynajem) AS 'dochód gry wynajem', \
+			ile_gier, ROUND(SUM(cena_wynajem)/ile_gier, 2) AS 'średni dochód gry wynajem', \
+			ROUND(SUM(cena_wynajem)/ile_gier/cena_wynajem, 2) AS 'znormalizowany średni dochód' \
+FROM wynajem \
+LEFT JOIN spichlerz_wynajem USING(id_spichlerz_wynajem) \
+JOIN gry USING(id_gry) \
+JOIN ilość USING(id_gry) \
+GROUP BY id_gry \
+ORDER BY SUM(cena_wynajem) DESC;"))
+
+df31 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+best_rent = df31.iloc[0]["tytuł"]
+best_rent_val = str(df31.iloc[0]["dochód gry wynajem"])
+df31[["id_gry","tytuł","dochód gry wynajem"]].head()
+```
+Jak widać, najbardziej dochodową grą w przypadku wynajmu jest gra o tytule `r py$best_rent`, dzięki której sklep uzyskał `r py$best_rent_val` zł.
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ilość AS (SELECT id_gry, COUNT(id_gry) AS 'ile_gier_inv' \
+					FROM spichlerz_sklep \
+					GROUP BY id_gry) \
+SELECT id_gry, tytuł,  COUNT(id_transakcji_sklep) AS 'ile_gier_zakup', ile_gier_inv, \
+			SUM(cena_kupno) AS 'dochód gry sklep', ROUND(SUM(cena_kupno)/ile_gier_inv, 2) AS 'średni dochód gry sklep', \
+			ROUND(SUM(cena_kupno)/ile_gier_inv/cena_kupno, 2) AS 'znormalizowany średni dochód' \
+FROM sklep \
+LEFT JOIN spichlerz_sklep USING(id_spichlerz_sklep) \
+JOIN gry USING(id_gry) \
+JOIN ilość USING(id_gry) \
+GROUP BY id_gry \
+ORDER BY SUM(cena_kupno) DESC;"))
+
+df32 = pd.DataFrame(result.fetchall(), columns=result.keys())
+best_sale = df32.iloc[0]["tytuł"] 
+connection.close()
+```
+Podobnie uczyniono z dochodem pochodzącym ze sprzedaży. Na szczycie rankingu znajduje się gra `r py$best_sale`.
+```{python, echo=FALSE}
+pd.set_option('display.max_columns', None)
+df32[["id_gry","tytuł","dochód gry sklep"]].head()
+```
+
+W obu przypadkach jest to jednak czysty zysk, zdeterminowany przez oryginalną cenę gry, która może być znacząco wyższa od pozostałych, bądź przez ilość gier dostępnych w magazynie. Dlatego też warto przeprowadzić analizę, próbując znormalizować zyski względem tych dwóch czynników. W ten sposób otrzymano tabelę, gdzie \textit{średni dochód} określa dochód podzielony przez ogólną ilość gier w magazynie, a`\textit{znormalizowany dochód} dodatkowo jest podzielony także przez wyjściową cenę kupna/wynajmu. Rozważane kolumny obrazują w nieco inny sposób dochody z każdej gry.
+
+Wpierw tabela dotycząca wynajmu.
+```{python, echo=FALSE}
+pd.set_option('display.max_columns', None)
+df31_sort = df31.sort_values(by='znormalizowany średni dochód', ascending=False).rename(columns={'średni dochód gry wynajem':'średni dochód','znormalizowany średni dochód':"znormalizowany dochód"})
+best_r = df31_sort.iloc[0]["tytuł"]
+best_rv = df31_sort.iloc[0]["średni dochód"]
+df31_sort[["id_gry","tytuł",'średni dochód', 'znormalizowany dochód']].head()
+```
+Najlepszą względem tak utworzonego znormalizowanego dochodu, okazała się gra o tytule `r py$best_r`, której średni dochód na grę pochodzący z wynajmu wynosi `r py$best_rv` zł.
+
+```{python, echo=FALSE}
+pd.set_option('display.max_columns', None)
+df32_sort = df32.sort_values(by='znormalizowany średni dochód', ascending=False).rename(columns={'średni dochód gry sklep':'średni dochód','znormalizowany średni dochód':"znormalizowany dochód"})
+best_s = df32_sort.iloc[0]["tytuł"]
+best_sv = df32_sort.iloc[0]["średni dochód"]
+
+```
+
+Analogicznie dla sprzedaży, na wyróżnienie zasługuje `r py$best_s` o średnim dochodzie wynoszącym `r py$best_sv` zł.
+
+```{python, echo=FALSE}
+pd.set_option('display.max_columns', None)
+df32_sort = df32.sort_values(by='znormalizowany średni dochód', ascending=False).rename(columns={'średni dochód gry sklep':'średni dochód','znormalizowany średni dochód':"znormalizowany dochód"})
+df32_sort[["id_gry","tytuł",'średni dochód', 'znormalizowany dochód']].head()
+
+```
+
+```{python, echo=FALSE}
+if best_sale != best_s:
+  zdanie = "sposób analizy ma znaczenie, gdyż gry uznane za najbardziej dochodowe różnią się w zależności od użytej metody. Na miano gier, które zarobiły dla nas najwięcej, zasługują dwa różne tytuły."
+else: 
+  zdanie = "sposób analizy w tym przypadku nie miał znaczenia, gdyż gry uznane za najbardziej dochodowe były identyczne, niezależnie od użytej metody. Na miano gry, która zarobiła dla nas najwięcej, zasługuje jeden tytuł."
+```
+Jak widać, przykładowo analizując wyniki otrzymane dla sprzedaży, `r py$zdanie`
+\section{Pytania własne}
+
+\subsection{\textit{Który klient wydał u nas najwięcej pieniędzy?}}
+
+Odpowiedzieć możemy na to pytanie poprzez zliczenie wszystkich transkacji danego klienta. Wynik przedstawiono w tabeli poniżej.
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH aaa AS ( \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_outlet) AS 'suma_trans', COUNT(id_transakcji_outlet) AS 'ilość_trans', 'OUTLET' \
+FROM outlet \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+UNION ALL \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_wynajem) AS 'suma_trans', COUNT(id_transakcji_wynajem) AS 'ilość_trans', 'WYNAJEM' \
+FROM wynajem \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+UNION ALL \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_kupno) AS 'suma_trans', COUNT(id_transakcji_sklep) AS 'ilość_trans', 'KUPNO' \
+FROM sklep \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+) \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(suma_trans) AS 'łącznie' \
+FROM aaa \
+GROUP BY id_klienta \
+ORDER BY łącznie DESC \
+LIMIT 20; \
+"))
+
+df4 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df4
+i, n = df4.iloc[0]['imię'], df4.iloc[0]['nazwisko']
+amount = df4.iloc[0]['łącznie']
+```
+
+`r py$i` `r py$n` jest osobą, która zostawiła w naszym sklepie `r py$amount` zł, co jest najwyższą wydaną kwotą łącznie w historii.
+
+Powyższy ranking można rozbić dodatkowo na poszczególne transakcje:
+
+- Wynajem
+```{python, echo=FALSE}
+def piniondz(id, cena, tabela):
+  return "SELECT id_klienta, imię, nazwisko, wiek, SUM({}) AS kwota, COUNT({}) AS ilość_transakcji \
+FROM {} \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+ORDER BY SUM({}) DESC \
+LIMIT 10;".format(cena, id, tabela, cena)
+
+connection = engine.connect()
+
+result = connection.execute(text(piniondz('id_transakcji_wynajem', 'cena_wynajem', 'wynajem')))
+
+df41 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df41
+```
+
+- Zakupy
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(piniondz('id_transakcji_sklep', 'cena_kupno', 'sklep')))
+
+df42 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df42
+```
+
+- Zakupy w outlecie
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(piniondz('id_transakcji_outlet', 'cena_outlet', 'outlet')))
+
+df43 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df43
+```
+
+\subsection{\textit{Mieszkańcy której ulicy najczęściej wypożyczali, a której najczęściej kupowali nasze gry?}}
+
+Wiemy, że wszyscy nasi klienci mieszkają w jednej miejscowości i są chętni podawać swoje dokładne adresy zamieszkania, abyśmy przechowywali je w bazie. Zatem możemy wykorzystać te informacje i sprawdzić na której ulicy mieszka najwięcej fanów naszego sklepu. (Przy okazji możemy także się dowiedzieć, gdzie się udać po zaginioną grę, której ktoś nie zwrócił).
+
+Wpierw wzięto pod uwagę sprzedaż. Poniższa tabela przedstawia ulice z największą ilością zakupionych gier.
+
+```{python, echo=FALSE}
+
+def ulica(tabela, cena, as_):
+    return "SELECT REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(adres, '0', ''), '1', ''), '2', ''), '3', ''), '4', ''), '5', ''), '6', ''), '7', ''), '8', ''), '9', '') as ulica, COUNT(*) as {}, SUM({}) wydane_$ \
+            FROM {} \
+            INNER JOIN klienci \
+            USING(id_klienta) \
+            WHERE adres NOT LIKE 'NULL' \
+            GROUP BY ulica \
+            ORDER BY {} DESC;".format(as_, cena, tabela, as_)
+  
+connection = engine.connect()
+
+result = connection.execute(text(ulica('sklep', 'cena_kupno', 'zakupione_gry')))
+
+df51 = pd.DataFrame(result.fetchall(), columns=result.keys())
+connection.close()
+ul = df51.iloc[0]["ulica"]
+gr = df51.iloc[0]["zakupione_gry"]
+mn = df51.iloc[0]["wydane_$"]
+```
+```{python, echo=FALSE}
+df51.head()
+```
+Na szczycie rankingu znajduje się ulica `r py$ul`, której mieszkańcy kupując `r py$gr` gier, wydali łącznie `r py$mn` zł.
+
+Oczywiście, analizę przeprowadzono także dla wynajmowanych gier.
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(ulica('wynajem', 'cena_wynajem', 'wypożyczone_gry')))
+
+df52 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+ul2 = df52.iloc[0]["ulica"]
+gr2 = df52.iloc[0]["wypożyczone_gry"]
+mn2 = df52.iloc[0]["wydane_$"]
+```
+```{python, echo=FALSE}
+df52.head()
+```
+
+Jak wynika z powyższej tabeli, ulica `r py$ul2` zdominowała ranking. Mieszkańcy wydali łącznie `r py$mn2` zł, wynajmując `r py$gr2` gier.
+\subsection{\textit{W jakie dni sklep odnotował największą liczbę transakcji?}}
+
+Kolejnym zagadnieniem wartym zanalizowania jest rozkład dziennych odwiedzin naszego sklepu. Szczególną uwagę należy poświęcić ilości transakcji wykonanych danego dnia oraz uzyskany dzięki nim dochód.
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ulsko AS ( \
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_kupno) as przychód \
+FROM sklep \
+GROUP BY dzień \
+UNION ALL \
+SELECT COUNT(*) as ilość, DATE(data_wynajmu) as dzień, SUM(cena_wynajem) as przychód \
+FROM wynajem \
+GROUP BY dzień \
+UNION ALL \
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_outlet) as przychód \
+FROM outlet \
+GROUP BY dzień \
+) \
+SELECT dzień, DATE_FORMAT(dzień, '%W') AS dzień_tygodnia, SUM(ilość) as 'ilość wizyt', SUM(przychód) as przychód \
+FROM ulsko \
+GROUP BY dzień \
+ORDER BY SUM(ilość) DESC \
+LIMIT 5; \
+"))
+
+df6 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df6
+```
+
+```{python, echo=FALSE}
+busy = df6.iloc[0]["dzień"]
+busy_day = df6.iloc[0]["dzień_tygodnia"]
+busy_visit = df6.iloc[0]["ilość wizyt"]
+```
+
+Analizując powyższą tabelę, możemy stwierdzić, że dzień z największą liczbą zrealizowanych transakcji, wynoszącą aż `r py$busy_visit` zakupów/wynajmów, to `r py$busy`, czyli pewien `r py$busy_day`.
+
+
+Jednak interesować nas może także ogólny rozkład ilości transakcji realizowanych w ciągu dnia. 
+
+```{python, echo=FALSE, results='hide'}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ulsko AS ( \
+SELECT COUNT(*) AS ilość, DATE(data_zakupu) AS dzień, SUM(cena_kupno) AS przychód \
+FROM sklep \
+GROUP BY dzień \
+UNION ALL \
+SELECT COUNT(*) AS ilość, DATE(data_wynajmu) AS dzień, SUM(cena_wynajem) AS przychód \
+FROM wynajem \
+GROUP BY dzień \
+UNION ALL \
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_outlet) as przychód \
+FROM outlet \
+GROUP BY dzień \
+) \
+SELECT dzień, SUM(ilość) as 'ilość wizyt', SUM(przychód) as przychód \
+FROM ulsko \
+GROUP BY dzień \
+ORDER BY dzień; \
+"))
+
+df61 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+
+visits = np.array(df61["ilość wizyt"])
+revs = np.array(df61["przychód"])
+
+mean_visits = round(np.mean(visits), 2)
+mean_revs = round(np.mean(revs), 2)
+med_vis = round(np.median(visits), 2)
+med_revs = round(np.median(revs), 2)
+
+if med_vis > mean_visits:
+  dis_vis = "lewostronnie skośne"
+else:
+  dis_vis = "prawostronnie skośne"
+  
+if med_revs > mean_revs:
+  dis_revs = "lewostronnie skośne"
+else:
+  dis_revs = "prawostronnie skośne"
+
+if dis_revs == dis_vis:
+  zdanie = "ich rozkłady danych są {}".format(dis_vis)
+else:
+  zdanie = "ich rozkłady danych są kolejno {}".format(dis_vis) + "oraz {}".format(dis_revs)
+
+plt.hist(visits, color='#E6A4AC', bins=12)
+plt.xlabel("Dzienna ilość transakcji")
+plt.ylabel("Histogram ilościowy")
+plt.title("Histogram ilościowy dziennych ilości transakcji")
+plt.show()
+
+plt.hist(revs, color='#E6A4AC', bins=20)
+plt.xlabel("Dzienny przychód")
+plt.ylabel("Histogram ilościowy")
+plt.title("Histogram ilościowy dziennych przychodów")
+plt.show()
+
+bb = round(busy_visit - mean_visits,0)
+```
+Średnia dzienna liczba transakcji wynosi `r py$mean_visits`, a średni dochód `r py$mean_revs` zł. Wykresy, jak i wartości median (odpowiednio `r py$med_vis` oraz `r py$med_revs` zł) obu zmiennych wskazują na to, że `r py$zdanie`. Najbardziej ruchliwy dzień przekroczył średnią ilość transakcji o około `r py$bb` łącznie wynajętych/sprzedanych gier.
+
+Oczywiście, można także przeprowadzić analizę względem najbardziej ruchliwych dni tygodni. Poniżej przedstawiono tabelę z łącznymi przychodami ze wszystkich transakcji w podziale na dzień tygodnia.
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ulsko AS ( \
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_kupno) as przychód \
+FROM sklep \
+GROUP BY dzień \
+UNION ALL \
+SELECT COUNT(*) as ilość, DATE(data_wynajmu) as dzień, SUM(cena_wynajem) as przychód \
+FROM wynajem \
+GROUP BY dzień \
+UNION ALL \
+SELECT COUNT(*) as ilość, DATE(data_zakupu) as dzień, SUM(cena_outlet) as przychód \
+FROM outlet \
+GROUP BY dzień \
+) \
+SELECT DATE_FORMAT(dzień, '%W') AS 'dzień tygodnia', SUM(ilość) as 'ilość wizyt', SUM(przychód) as przychód \
+FROM ulsko \
+GROUP BY DATE_FORMAT(dzień, '%W') \
+ORDER BY WEEKDAY(dzień); \
+"))
+
+df62 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+
+df6_sort = df62.sort_values(by="ilość wizyt", ascending=False)
+best_trans= df6_sort.iloc[0]
+df6_sort2 = df62.sort_values(by="przychód", ascending=False)
+best_rev= df6_sort2.iloc[0]
+if best_trans["dzień tygodnia"] == best_rev["dzień tygodnia"]:
+  zdanie = "zarówno najbardziej ruchliwym jak i najbardziej dochodowym dniem tygodnia okazał się {}".format(best_rev["dzień tygodnia"])
+else:
+  zdanie = "najbardziej ruchliwym dniem tygodnia okazał się {}".format(best_trans["dzień tygodnia"]) + ", za to najbardziej dochodowym {}".format(best_rev["dzień tygodnia"])
+most_visit = best_trans["ilość wizyt"]
+big_rev = str(best_rev["przychód"])
+```
+
+```{python, echo = FALSE}
+df62
+
+```
+Z powyższej tabeli można wyczytać, że `r py$zdanie`. Największa liczba transakcji wyniosła aż `r py$most_visit`, a największy łączny przychód ze wszystkich transakcji jest równy `r py$big_rev` zł. 
+
+\subsection{\textit{Które gry z danej serii są najpopularniejsze, oraz po którą serię samą w sobie najchętniej sięgają klienci?}}
+
+Najpierw zostaną przedstawione ogólne rankingi każdej serii gier dostępnej w sklepie.\
+
+- Seria Monopoly
+```{python, echo=FALSE}
+
+def w_serii(gra):
+    return "WITH grr AS( \
+	SELECT tytuł, COUNT(id_transakcji_sklep) as ilość \
+	FROM gry \
+	INNER JOIN spichlerz_sklep USING(id_gry) \
+	INNER JOIN sklep USING(id_spichlerz_sklep) \
+	GROUP BY tytuł \
+	UNION ALL \
+	SELECT tytuł, COUNT(id_transakcji_wynajem) as ilość \
+	FROM gry \
+	INNER JOIN spichlerz_wynajem USING(id_gry) \
+	INNER JOIN wynajem USING(id_spichlerz_wynajem) \
+	GROUP BY tytuł \
+) \
+SELECT tytuł, SUM(ilość) as 'kupno+wynajem' FROM grr \
+WHERE tytuł LIKE '{}%' \
+GROUP BY tytuł \
+ORDER BY SUM(ilość) DESC;".format(gra)
+  
+connection = engine.connect()
+
+result = connection.execute(text(w_serii('Monopoly')))
+
+df71 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df71
+```
+- Seria Dobble
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(w_serii('Dobble')))
+
+df72 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df72
+```
+- Seria Wsiąść do Pociągu
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(w_serii('Wsiąść')))
+
+df73 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df73
+```
+
+```{python, echo=FALSE}
+best_m, best_d, best_w = df71.iloc[0]['tytuł'], df72.iloc[0]['tytuł'], df73.iloc[0]['tytuł']
+```
+Najchętniej wybierane tytuły spośród dostępnych serii to odpowiednio `r py$best_m`, `r py$best_d` oraz `r py$best_w`.
+
+Natomiast jeżeli chodzi o najpopularniejszą serię gier, możemy dane przedstawić w tabeli sumującej wszystkie transkacje.
+
+```{python, echo=FALSE}
+
+connection = engine.connect()
+
+result = connection.execute(text("WITH grr AS( \
+	SELECT tytuł, COUNT(id_transakcji_sklep) as ilość \
+	FROM gry \
+	INNER JOIN spichlerz_sklep USING(id_gry) \
+	INNER JOIN sklep USING(id_spichlerz_sklep) \
+	GROUP BY tytuł \
+	UNION ALL \
+	SELECT tytuł, COUNT(id_transakcji_wynajem) as ilość \
+	FROM gry \
+	INNER JOIN spichlerz_wynajem USING(id_gry) \
+	INNER JOIN wynajem USING(id_spichlerz_wynajem) \
+	GROUP BY tytuł \
+) \
+SELECT CASE WHEN tytuł LIKE 'Wsiąść%' THEN 'Wsiąść do Pociągu' \
+				WHEN tytuł LIKE 'Monopoly%' THEN 'Monopoly' \
+				WHEN tytuł LIKE 'Dobble%' THEN 'Dobble' \
+				END AS seria, sum(ilość) AS suma, AVG(ilość)*2 AS średnia FROM grr \
+WHERE CASE WHEN tytuł LIKE 'Wsiąść%' THEN 'Wsiąść do Pociągu' \
+			  WHEN tytuł LIKE 'Monopoly%' THEN 'Monopoly' \
+			  WHEN tytuł LIKE 'Dobble%' THEN 'Dobble' \
+			  END NOT LIKE 'NULL' \
+GROUP BY seria \
+ORDER BY suma DESC;"))
+
+df74 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+
+```
+```{python, echo=FALSE}
+df74
+```
+```{python, echo=FALSE}
+best_seria = df74.iloc[0]['seria']
+best_suma = df74.iloc[0]['suma']
+df74['średnia'] = df74['średnia'].astype(float)
+best_srednia = df74['średnia'].idxmax()
+best_avg_game = df74.loc[best_srednia, 'seria']
+```
+
+Sumując wszystkie transakcje, tj. zakupy w sklepie oraz outlecie i wypożyczenia gier, przez ostatni rok najwięcej ich się uzbierało dla serii `r py$best_seria` w liczbie `r py$best_suma`. Jednak gdy spojrzy się na wartości średnie (wymieniona suma transakcji dzielona na ilość dostępnych gier w serii), to najwyższą taką wartość zanotowano dla serii `r py$best_avg_game`.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
