@@ -11,27 +11,27 @@ from sqlalchemy import text
 t = 10000 ##żeby wykluczyć mało znane imiona i nazwiska
 
 ##imiona męskie i kobiece
-im = pd.read_csv("IM.csv")
+im = pd.read_csv("csv/IM.csv")
 im = im[im["LICZBA WYSTĄPIEŃ"] > t] 
-ik = pd.read_csv("IK.csv")
+ik = pd.read_csv("csv/IK.csv")
 ik = ik[ik["LICZBA_WYSTĄPIEŃ"] > t]
 ik = ik["IMIĘ_PIERWSZE"]
 im = im["IMIĘ PIERWSZE"]
 
 ##nazwiska męskie i kobiece
-nm = pd.read_csv("NM.csv")
+nm = pd.read_csv("csv/NM.csv")
 nm = nm[nm["Liczba"] > t]
-nk = pd.read_csv("NK.csv")
+nk = pd.read_csv("csv/NK.csv")
 nk = nk[nk["Liczba"] > t]
 nk = nk["Nazwisko aktualne"]
 nm = nm["Nazwisko aktualne"]
 
-ulice = pd.read_csv("ULIC.csv", sep=";")
+ulice = pd.read_csv("csv/ULIC.csv", sep=";")
 ulice_jaworze = ulice.query('WOJ == 24 & POW == 2 & GMI == 6 & RODZ_GMI == 2') ##bo kod terytorialny jaworza to 24.2.6.2
 ulice_jaworze = np.array(ulice_jaworze["NAZWA_1"]) ##i bierzemy ulice
 
 ##gry
-gry = pd.read_csv("GRY.csv")
+gry = pd.read_csv("csv/GRY.csv")
 gry = gry.rename(columns={"ID":"id_gry", "NAZWA":"tytuł", "RODZAJ":"rodzaj", "CENA":"cena", "CZAS_GRY":"czas_gry", 
                          "MIN_GRACZY":"min_graczy", "MAX_GRACZY":"max_graczy", "MIN_WIEK":"min_wiek", "TURNIEJOWE":"turniejowe"})
 
