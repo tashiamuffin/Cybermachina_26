@@ -40,14 +40,9 @@ def ludzie(mi, ki, mn, kn, ul, pk= 0.516, N=7349 ):
     Funkcja do generowania ludności z Jaworza
     pk = 0.516 - procent kobiet w społeczeństwie
     N = 7349 - (w miarę) aktualny stan ludności w tej urokliwej wsi
-    
     """
     
-    imie = []
-    nazwisko = []
-    wiek = []
-    adres = []
-    tel = []
+    imie, nazwisko, wiek, adres, tel = [], [], [], [], []
     
     for n in range(N):
         
@@ -70,13 +65,13 @@ def ludzie(mi, ki, mn, kn, ul, pk= 0.516, N=7349 ):
         else:
             wiek.append(random.randint(60,99)) ##reszta starsza
             
-            
-        p = random.random()   
-        if p< 0.90:
+        p = random.random()  
+
+        if p < 0.90:
             adres.append(random.choice(ul) + " " + str(random.randint(1,100)))
             
             p = random.random()
-            if p< 0.90:
+            if p < 0.90:
                 tel.append(random.randint(500000000, 999999999))
             else:
                 tel.append("NULL")
@@ -85,15 +80,29 @@ def ludzie(mi, ki, mn, kn, ul, pk= 0.516, N=7349 ):
             adres.append("NULL")
             tel.append(random.randint(500000000, 999999999))
     
-    return pd.DataFrame({"id_mieszkańca": range(1,N+1), "imię": imie, "nazwisko": nazwisko, 
+    return pd.DataFrame({"id_mieszkańca": range(1, N + 1), "imię": imie, "nazwisko": nazwisko, 
                          "wiek": wiek, "adres": adres, "telefon": tel})
 
-def transform_wiek(wiek): 
+def transform_wiek(wiek):
     """
     Funkcja zwracająca częstość z jaką dana osoba na podstawie wieku mogłaby nas odwiedzać. 
     Im większa wartość tym większe prawdopodobieństwo wizyty.
-    
     """
+    
+    progi_wiekowe = np.array([9, 11, 15, 19, 29, 37, 44, 54, 69])
+    czestosci =  np.array([1, 2, 3, 5, 6, 5, 4, 3, 2, 1])
+    
+    try:
+        indeksy = np.searchsorted(progi_wiekowe, wiek)
+    except:
+        return 1
+    return czestosci[indeksy]
+
+"""def transform_wiek(wiek): 
+    
+    Funkcja zwracająca częstość z jaką dana osoba na podstawie wieku mogłaby nas odwiedzać. 
+    Im większa wartość tym większe prawdopodobieństwo wizyty.
+    
     
     if wiek < 10:
         return 1
@@ -114,7 +123,7 @@ def transform_wiek(wiek):
     elif wiek < 70:
         return 2
     else:
-        return 1
+        return 1 """
 
 def inven(n = 100):
     """
@@ -123,10 +132,10 @@ def inven(n = 100):
     """
     
     ilosc = np.random.randint(20, 30, n) ## od 20 do 30 każdego z tytułów
-    ids = range(1, (n+1))
+    ids = range(1, (n + 1))
     ilosci = [ids[x] for x in range(len(ids)) for i in range(ilosc[x])]
     
-    return pd.DataFrame({"id_inv": range(1, (len(ilosci)+1)),"id_tytuł": ilosci })
+    return pd.DataFrame({"id_inv": range(1, (len(ilosci) + 1)),"id_tytuł": ilosci })
 
 def odwiedziny(start = datetime.datetime(2022, 6, 6, 9, 0, 0), lamb = 4):
     """
@@ -134,7 +143,6 @@ def odwiedziny(start = datetime.datetime(2022, 6, 6, 9, 0, 0), lamb = 4):
     Zwraca godziny wizyt, mieszkańców, co kupili/ wynajęli.
     start - dzień startowy naszego przedsiębiorstwa, niech to będzie 6 czerwca 2022, 9:00
     lamb - lambda - parametr potrzebny do generowania procesu Poissona - zakładamy 4 klientów na godzinę w naszym sklepie
-   
     """
     
     mieszkancy = ludzie(im, ik, nm, nk, ulice_jaworze) #baza mieszkańców, którzy mogą nas odwiedzić
@@ -203,7 +211,7 @@ def odwiedziny(start = datetime.datetime(2022, 6, 6, 9, 0, 0), lamb = 4):
                     
                     ##losuje zwrot za 1 lub 2 dni w godzinach otwarcia, bo zakładamy, że tyle mają czasu na zwrot
                     return_date = start + datetime.timedelta(days=random.randint(1,2)) + datetime.timedelta(
-                        hours=round(random.uniform(1,T), 2))
+                        hours=round(random.uniform(1, T), 2))
                     
                     ##losuje id_gry, które ktoś wypożycza
                     ##szukamy tych id które są dostępne, czyli NIE ma ich w df rental z returndate > dziś
@@ -282,7 +290,6 @@ def format_tabel(wizyty, gry = gry):
     gotowe tabele, które trafią do bazy danych.
     wizyty - wynik z funkcji odwiedziny()
     gry - tabela z grami naszego wykonania
-    
     """
     tabela_g = wizyty[0] ##tabela główna
     rental_arch = wizyty[1] ##archiwum wynajmu
@@ -294,6 +301,7 @@ def format_tabel(wizyty, gry = gry):
     outlet_arch = wizyty[7] ## archiwum outletu
 
     tabela_g = tabela_g.rename(columns = {"sprzedawca":"id_pracownika"})
+
     ## ------------- TABELA KLIENCI -------------
     
     #szukamy unikatowych osób, które pojawiły się u nas w sklepie i ich ostatnią wizytę
@@ -306,6 +314,7 @@ def format_tabel(wizyty, gry = gry):
     klienci = klienci[["id_klienta", "wizyta", "imię", "nazwisko", "wiek", "adres", "telefon"]] #końcowa tabela klientów
     
     ## ---------------- TABELA SPICHLERZ_WYNAJEM ---------------
+
     ceny = gry[["id_gry","cena"]]
     ceny = ceny.rename(columns = {"id_gry": "id_tytuł"}) ##tymczasowa tabela z cenami
     ceny["cena_wynajem"] = np.round(0.15*ceny["cena"], 2 ) ###bo ustalamy, że cena wynajmu gry kosztuje 15% jej ceny rynkowej
@@ -338,6 +347,7 @@ def format_tabel(wizyty, gry = gry):
     spichlerz_sklep = spichlerz_sklept[["id_spichlerz_sklep", "id_gry", "ostatni_update"]] ##ostatnia formatka
     
     ## ---------------- TABELA WYNAJEM ---------
+
     sub = pd.merge(rental_arch, tabela_g, on = ["return_date", "id_mieszkańca"])[["id_inv", "wizyta",
                                                                                   "return_date", "zniszczona", 
                                                                                   "id_mieszkańca", "id_pracownika"]]
@@ -353,6 +363,7 @@ def format_tabel(wizyty, gry = gry):
                        "id_pracownika", "id_klienta", "zniszczona"]]
     
     ## ----------- TABELA SKLEP --------------------
+
     tabela_g = tabela_g.rename(columns = {"wizyta":"data_zakupu"})
     shop_arch = shop_arch.rename(columns = {"wizyta":"data_zakupu"})
     shop_arch['data_zakupu'] = pd.to_datetime(shop_arch['data_zakupu']) ##merge z tabelą główną
@@ -383,6 +394,7 @@ def format_tabel(wizyty, gry = gry):
                       "data_zakupu", "id_klienta", "id_pracownika"]]
     
     ## -------------------TABELA SPICHLERZ_OUTLET --------------
+
     s_out = outlet_akt.rename(columns={ "id_inv":"id_spichlerz_wynajem", "return_date":"data_zwrotu", 
                                        "id_outlet": "id_spichlerz_outlet"})
     spichlerz_outlet = pd.merge(s_out, wynajem[["data_zwrotu", "id_spichlerz_wynajem","id_transakcji_wynajem"]],
@@ -419,7 +431,7 @@ def sales(ul = ulice_jaworze):
     wiek = [22, 22, 21, 21]
     r = random.sample(id_pracownika, k=4)
     
-    adresy = [random.choice(ul) + ' ' + str(random.randint(1,100)) for _ in range(4)]
+    adresy = [random.choice(ul) + ' ' + str(random.randint(1, 100)) for _ in range(4)]
     telefony = [random.randint(500000000, 999999999) for _ in range(4)]
     
     one = pd.DataFrame({"id_pracownika" : r, "imię_pracownika" : imiona, 
@@ -627,6 +639,8 @@ def turniej(gracze, stoly, gry, inv, rental):
     rozgrywka = rozgrywka.rename(columns={'id_turnieju':'id_turniej', 'id_rodzaj':'id_rodzaj','data':'data'})
     return spis_turniej, rozgrywka, df_wynik  
 
+
+
 def drop_foreign_key(engine,table, key):
 
     connection = engine.connect()
@@ -736,5 +750,5 @@ if __name__ == "__main__":
     add_foreign_key(engine,'wyniki','FK_id_klienta3','id_klienta','klienci(id_klienta)')
 
     conn.close()
-    raise ValueError('I pyk dwójeczka')
+    print("Database is ready")
 
