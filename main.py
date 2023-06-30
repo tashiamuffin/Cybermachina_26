@@ -535,7 +535,7 @@ def turniej(gracze, stoly, gry, inv, rental):
                 id_rozgrywki_s = np.round(np.array([id_turniej[_]]*(max_g)),0) # powtarzamy id_turnieju 
                 id_turnieji = np.append(id_turnieji,id_rozgrywki_s)
 
-                id_klienta = random.sample(list(gracze['id_klienta']),k = max_g) # losujemy graczy bez zwracania
+                id_klienta = random.sample(list(gracze[gracze['wiek']>15]['id_klienta']),k = max_g) # losujemy graczy bez zwracania
                 id_klientow = np.append(id_klientow,id_klienta)
 
                 wynik = [spis_turniej[spis_turniej['id_spis']==kt]['średnia_punktów'].iloc[0]]*max_g + np.random.normal(
@@ -686,6 +686,8 @@ if __name__ == "__main__":
     drop_foreign_key(engine,'wyniki','FK_id_klienta3')
     drop_foreign_key(engine,'outlet','FK_id_klienta')
     drop_foreign_key(engine,'outlet','FK_id_pracownika')
+    drop_foreign_key(engine,'outlet','FK_id_transakcji_wynajem1')
+    drop_foreign_key(engine,'outlet','FK_id_spichlerz_wynajem1')
 
     conn.execute(text('TRUNCATE TABLE rodzaje_turniejów'))
     conn.execute(text('TRUNCATE TABLE gry'))
@@ -713,6 +715,8 @@ if __name__ == "__main__":
     m.to_sql("turnieje", engine, if_exists="append", index=False)
     p.to_sql("wyniki", engine, if_exists="append", index=False)
 
+    add_foreign_key(engine,'outlet','FK_id_transakcji_wynajem1','id_transakcji_wynajem','wynajem(id_transakcji_wynajem)')
+    add_foreign_key(engine,'outlet','FK_id_spichlerz_wynajem1','id_spichlerz_wynajem','spichlerz_wynajem(id_spichlerz_wynajem)')
     add_foreign_key(engine,'outlet','FK_id_klienta','id_klienta','klienci(id_klienta)')
     add_foreign_key(engine,'outlet','FK_id_pracownika','id_pracownika','pracownicy(id_pracownika)')
     add_foreign_key(engine,'rodzaje_turniejów','FK_id_gry','id_gry','gry(id_gry)')
@@ -732,5 +736,5 @@ if __name__ == "__main__":
     add_foreign_key(engine,'wyniki','FK_id_klienta3','id_klienta','klienci(id_klienta)')
 
     conn.close()
-    print("hura")
+    raise ValueError('I pyk dwójeczka')
 
