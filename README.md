@@ -1,7 +1,7 @@
 # Cybermachina_26
 Grupowy projekt bazy SQL na kurs Bazy danych.
 
-## Autorzy: Michał Bresiński, Natalia Lach, Alicja Myśliwiec, Fi;ip Oszczepaliński
+## Autorzy: Michał Bresiński, Natalia Lach, Alicja Myśliwiec, Filip Oszczepaliński
 
 ### Jak zacząć?
 
