@@ -1,16 +1,350 @@
 ---
-title: "Hej"
-output: pdf_document
-date: "2023-06-11"
+title: "Raport"
+author: "Michał Bresiński, Natalia Lach, Alicja Myśliwiec, Filip Oszczepaliński"
+output:
+  pdf_document
+date: "2023-06-28"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-```{r}
+```{r, echo=FALSE}
+# IMPORTY R I WSZELKIE SZMERY BAJERY
 library(reticulate)
+#use_python("C:\\Users\\alicj\\AppData\\Local\\Programs\\Python")
+#np <- import("numpy")
+```
+
+
+
+```{python, echo=FALSE}
+# IMPORTY PYTHON
+
+from sqlalchemy import create_engine, inspect
+from sqlalchemy import URL, text
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+```
+
+```{python, echo=FALSE}
+# POŁĄCZENIE Z BAZĄ
+
+url_object = URL.create(
+    "mysql+pymysql",
+    username="team26",
+    password="te@mzg",
+    host="giniewicz.it",
+    database="team26",
+)
+
+#te@mzg
+
+engine = create_engine(url_object)
+```
+\section{Pytanie 1}
+
+\textit{Wyznacz ranking na pracownika miesiąca dla każdego miesiąca, w którym sklep prowadził sprzedaż.}
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+connection.execute(text("SET lc_time_names = 'pl_PL'"))
+
+result = connection.execute(text("WITH sss AS ( \
+    SELECT id_pracownika, DATE_FORMAT(data_wynajmu, '%M') AS miesiąc, YEAR(data_wynajmu) AS rok, \
+        SUM(cena_wynajem) AS 'przychód', 'WYNAJEM', MONTH(data_wynajmu) AS msc \
+    FROM wynajem \
+    GROUP BY id_pracownika, DATE_FORMAT(data_wynajmu, '%M'), YEAR(data_wynajmu) \
+    \
+    UNION ALL \
+    \
+    SELECT id_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc, YEAR(data_zakupu) AS rok, \
+        SUM(cena_kupno) AS 'przychód', 'KUPNO', MONTH(data_zakupu) AS msc \
+    FROM sklep \
+    GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'), YEAR(data_zakupu) \
+    \
+    UNION ALL \
+    \
+    SELECT id_pracownika, DATE_FORMAT(data_zakupu, '%M') AS miesiąc, YEAR(data_zakupu) AS rok, \
+        SUM(cena_outlet) AS 'przychód', 'OUTLET', MONTH(data_zakupu) AS msc \
+    FROM outlet \
+    GROUP BY id_pracownika, DATE_FORMAT(data_zakupu, '%M'), YEAR(data_zakupu) \
+) \
+SELECT id_pracownika, imię_pracownika, nazwisko_pracownika, miesiąc, msc, rok, SUM(przychód) AS 'przychody' \
+FROM sss \
+JOIN pracownicy USING(id_pracownika) \
+GROUP BY id_pracownika, miesiąc, rok \
+ORDER BY rok, msc, SUM(przychód) DESC;"))
+
+df1 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python, echo=FALSE}
+df1
+```
+
+```{python, echo=FALSE}
+df_pivot =df1.sort_values(by=['rok','msc'], ascending=[True, True])
+print(df_pivot)
+df_pivot = df1.pivot_table(index=['rok', 'msc'], columns='imię_pracownika', values='przychody')
+ax = df_pivot.plot(kind='bar', color=['#53A2BE', '#E6A4AC'])
+
+ax.set_xlabel('Rok, Miesiąc')
+ax.set_ylabel('Przychody')
+ax.set_title('Przychody wygenerowane przez pracowników w poszczególnych miesiącach')
+ax.legend(title='Pracownicy')
+
+plt.xticks(rotation=45)  
+plt.tight_layout() 
+plt.show()
+```
+Na powyższym wykresie dobrze widoczne są różnice pomiędzy przychodami wygenerowanymi przez konkretnych pracowników, łatwo więc stwierdzić, który z nich poradził sobie lepiej w danym miesiącu działalności sklepu. 
+```{python, echo=FALSE}
+filtered_data = df1.loc[(df1['miesiąc'] == 'grudzień') & (df1['rok'] == 2022)]
+best_month_year = filtered_data['przychody'].idxmax()
+best_employee = filtered_data.loc[best_month_year, 'imię_pracownika']
+best_revenue = filtered_data.loc[best_month_year, 'przychody']
+
+# Generowanie zdania
+zdanie = f" W grudniu 2022 najlepsze przychody zostały wygenerowane przez {best_employee} w wysokości {best_revenue}$."
+print(zdanie)
+```
+Dodatkowo można pokazać, o ile większy utarg zrobił \textit{pracownik miesiąca}.
+
+```{python, echo=FALSE}
+df1['rok'] = df1['rok'].astype(str)
+df_sorted = df1.sort_values(['miesiąc', 'rok', 'przychody'], ascending=[True, True, False])
+
+df_grouped = df_sorted.groupby(['miesiąc', 'rok'])
+df_best_employee = df_grouped.first()
+df_second_best_employee = df_grouped.nth(1)
+df_best_employee['najlepszy_pracownik'] = df_best_employee['imię_pracownika'] + ' ' + df_best_employee['nazwisko_pracownika']
+df_best_employee['różnica_przychodów'] = df_best_employee['przychody'] - df_second_best_employee['przychody']
+df_best = df_best_employee[['najlepszy_pracownik', 'różnica_przychodów']]
+df_best = df_best.sort_values(by='różnica_przychodów', ascending=False)
+print(df_best)
+```
+
+\section{Pytanie 2}
+
+Sporządź analizę top 10 zawodników turniejowych w zależności od gry.
+
+```{python, echo=FALSE}
+
+def turniej(rodzaj):
+  return "SELECT id_klienta, imię, nazwisko, wiek, SUM(wynik) AS wynik, tytuł \
+FROM wyniki \
+INNER JOIN klienci USING(id_klienta) \
+INNER JOIN turnieje USING(id_turniej) \
+INNER JOIN rodzaje_turniejów USING(id_rodzaj) \
+INNER JOIN gry USING(id_gry) \
+WHERE id_rodzaj = {} \
+GROUP BY id_klienta \
+ORDER BY wynik DESC \
+LIMIT 10".format(rodzaj)
+
+connection = engine.connect()
+
+result = connection.execute(text(turniej('1')))
+
+df21 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
 ```
 ```{python}
-print("tu będzie super raport")
+df21
 ```
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('2')))
+
+df22 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df22
+```
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('3')))
+
+df23 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df23
+```
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('4')))
+
+df24 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df24
+```
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(turniej('5')))
+
+df25 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df25
+```
+\section{Pytanie 3}
+
+Ustal, które gry przynoszą największy dochód ze sprzedaży, a które z wypożyczeń.
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ilość AS (SELECT id_gry, COUNT(id_gry) AS 'ile_gier' \
+					FROM spichlerz_wynajem \
+					GROUP BY id_gry) \
+SELECT id_gry, tytuł, COUNT(id_transakcji_wynajem) AS 'ile_gier_wynajem', SUM(cena_wynajem) AS 'dochód gry wynajem', \
+			ile_gier, ROUND(SUM(cena_wynajem)/ile_gier, 2) AS 'średni dochód gry wynajem', \
+			ROUND(SUM(cena_wynajem)/ile_gier/cena_wynajem, 2) AS 'znormalizowany średni dochód' \
+FROM wynajem \
+LEFT JOIN spichlerz_wynajem USING(id_spichlerz_wynajem) \
+JOIN gry USING(id_gry) \
+JOIN ilość USING(id_gry) \
+GROUP BY id_gry \
+ORDER BY SUM(cena_wynajem)/ile_gier/cena_wynajem DESC;"))
+
+df31 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+pd.set_option('display.max_columns', None)
+df31
+```
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH ilość AS (SELECT id_gry, COUNT(id_gry) AS 'ile_gier_inv' \
+					FROM spichlerz_sklep \
+					GROUP BY id_gry) \
+SELECT id_gry, tytuł,  COUNT(id_transakcji_sklep) AS 'ile_gier_zakup', ile_gier_inv, \
+			SUM(cena_kupno) AS 'dochód gry sklep', ROUND(SUM(cena_kupno)/ile_gier_inv, 2) AS 'średni dochód gry sklep', \
+			ROUND(SUM(cena_kupno)/ile_gier_inv/cena_kupno, 2) AS 'znormalizowany średni dochód' \
+FROM sklep \
+LEFT JOIN spichlerz_sklep USING(id_spichlerz_sklep) \
+JOIN gry USING(id_gry) \
+JOIN ilość USING(id_gry) \
+GROUP BY id_gry \
+ORDER BY SUM(cena_kupno)/ile_gier_inv/cena_kupno DESC;"))
+
+df32 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+pd.set_option('display.max_columns', None)
+df32
+```
+\section{Pytania własne}
+
+\subsection{1}
+kto wydał u nas najwięcej pieniędzy - kupując, wynajmując i łącznie
+
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text("WITH aaa AS ( \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_outlet) AS 'suma_trans', COUNT(id_transakcji_outlet) AS 'ilość_trans', 'OUTLET' \
+FROM outlet \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+UNION ALL \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_wynajem) AS 'suma_trans', COUNT(id_transakcji_wynajem) AS 'ilość_trans', 'WYNAJEM' \
+FROM wynajem \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+UNION ALL \
+SELECT id_klienta, imię, nazwisko, wiek, SUM(cena_kupno) AS 'suma_trans', COUNT(id_transakcji_sklep) AS 'ilość_trans', 'KUPNO' \
+FROM sklep \
+LEFT JOIN klienci USING(id_klienta) \
+GROUP BY id_klienta \
+) \
+SELECT id_klienta, imię, nazwisko, wiek, COUNT(*) AS 'outlet+wynajem+kupno', SUM(suma_trans) AS 'łącznie' \
+FROM aaa \
+GROUP BY id_klienta \
+ORDER BY łącznie DESC \
+LIMIT 20; \
+"))
+
+df4 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df4
+```
+\subsection{2}
+Mieszkańcy której ulicy najczęściej wypożyczali, a której najczęściej kupowali nasze gry?
+
+```{python, echo=FALSE}
+
+def ulica(tabela, cena, as_):
+    return "SELECT REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(adres, '0', ''), '1', ''), '2', ''), '3', ''), '4', ''), '5', ''), '6', ''), '7', ''), '8', ''), '9', '') as ulica, COUNT(*) as {}, SUM({}) wydane_$ \
+            FROM {} \
+            INNER JOIN klienci \
+            USING(id_klienta) \
+            WHERE adres NOT LIKE 'NULL' \
+            GROUP BY ulica \
+            ORDER BY {} DESC;".format(as_, cena, tabela, as_)
+  
+connection = engine.connect()
+
+result = connection.execute(text(ulica('sklep', 'cena_kupno', 'zakupione_gry')))
+
+df51 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df51
+```
+```{python, echo=FALSE}
+connection = engine.connect()
+
+result = connection.execute(text(ulica('wynajem', 'cena_wynajem', 'wypożyczone_gry')))
+
+df52 = pd.DataFrame(result.fetchall(), columns=result.keys())
+
+connection.close()
+```
+```{python}
+df52
+```
+\subsection{3}
+\subsection{4}
+
+
+
+
+
+
+
+
+
+
+
+
+
