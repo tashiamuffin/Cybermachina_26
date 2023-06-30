@@ -12,4 +12,4 @@ Grupowy projekt bazy SQL na kurs Bazy danych.
 3. Zainstaluj potrzebne biblioteki:\
 `pip install -r requirements.txt`
 
-
+### Więcej szczegółów znajduje się w pliku 'dokumentacja.pdf'.
