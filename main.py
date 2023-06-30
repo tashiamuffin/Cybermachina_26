@@ -635,17 +635,12 @@ def turniej(gracze, stoly, gry, inv, rental):
                            scale= gra_tournament[gra_tournament['id_gry']==idgry]['czas_gry'].iloc[0])*0.1]*(il-max_g*_n),0)
                     czas_rozrywki = np.append(czas_rozrywki,czas)
 
-        sorted_indices = np.argsort(-wyniki)
+        wyniki = np.ceil(wyniki).astype(int)
         ranks = np.zeros_like(wyniki)
-        current_rank = 1
-        count = 1
-        for i in range(len(sorted_indices)):
-            if i > 0 and wyniki[sorted_indices[i]] != wyniki[sorted_indices[i-1]]:
-                current_rank += count
-                count = 1
-            else:
-                count += 1
-            ranks[sorted_indices[i]] = current_rank
+        punktacja = np.unique(wyniki)
+        punktacja = np.sort(punktacja)[::-1]
+        for ind in range(len(punktacja)):
+            ranks[wyniki == punktacja[ind]] = ind+1        
 
         ranga = np.append(ranga,ranks)
         wyniks = np.append(wyniks,wyniki)
